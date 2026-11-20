@@ -1,0 +1,49 @@
+---
+title: "Slide 2 of 2 · Every research project"
+config:
+  flowchart:
+    wrappingWidth: 900
+    nodeSpacing: 28
+    rankSpacing: 40
+    padding: 12
+---
+%% Training slide 2. Edit, then re-render (see docs/training/README.md).
+%% Never write "\n..." in Windows paths: Mermaid renders it as a line break, even escaped.
+flowchart TB
+  subgraph ROW[" "]
+  direction LR
+  subgraph S4["4 · START A PROJECT"]
+    direction TB
+    D1["Ask Claude:<br/><i>“Start a new project<br/>called wetland_mb”</i>"] --> D2["File → Open Folder →<br/><b>C:\&lt;NSID&gt;\Projects\wetland_mb</b><br/>(Claude now reads its CLAUDE.md)"] --> D3["Ask Claude to run<br/><b>init_project.ps1</b><br/>(git + NDAC push guard)"] --> D4["Fill CLAUDE.md: purpose,<br/>security zone, data steward"]
+  end
+  subgraph S5["5 · PLAN THE RESEARCH"]
+    direction TB
+    E1["<b>objectives.md</b><br/>questions, hypotheses,<br/>key metric fixed in advance"] --> E2["<b>plan.md</b> + pipeline<br/>and Gantt diagrams<br/>(Claude drafts them)"] --> E3["Register every input in<br/><b>data_sources.md</b><br/>(provider, licence, zone)"]
+  end
+  subgraph S6["6 · ANALYSE"]
+    direction TB
+    F1["Ask Claude:<br/><i>“Add a sub-project<br/>called et_mapping”</i>"] --> F2["Ask Claude:<br/><i>“Make a v2 that<br/>adds Sentinel-2”</i><br/>(a version = a settings file)"] --> F3["Commit, then run:<br/>each run gets its own<br/>output folder"] --> F4["Log it: what changed,<br/>result, commit, keep / drop"]
+  end
+  subgraph S7["7 · SHARE RESULTS"]
+    direction TB
+    G1["Aggregate to RM or<br/>ecodistrict level<br/>(≥ 5 farms per cell)"] --> G2{{"<b>/export-check</b><br/>PASS or BLOCKED"}} --> G3["Acknowledge NDAC<br/>data and facilities"] --> G4["Paper · thesis · talk<br/>dataset deposit"]
+  end
+  S4 ==> S5 ==> S6 ==> S7
+  end
+
+  RULES["<b>Throughout:</b>&nbsp; data/raw is read-only &nbsp;·&nbsp; data never goes into git &nbsp;·&nbsp; commit at the end of each session<br/>log decisions in PROGRESS_REPORT.md &nbsp;·&nbsp; stuck? just ask Claude in plain words"]
+  ROW ~~~ RULES
+
+  classDef step fill:#ffffff,stroke:#275D38,stroke-width:1.5px,color:#1b1b1b;
+  classDef ask fill:#e6f0e8,stroke:#275D38,stroke-width:1.5px,color:#1b1b1b;
+  classDef gate fill:#fff4d6,stroke:#C8922A,stroke-width:2px,color:#1b1b1b;
+  classDef banner fill:#275D38,stroke:#275D38,color:#ffffff;
+  class D2,D4,E1,E2,E3,F3,F4,G1,G3,G4 step;
+  class D1,D3,F1,F2 ask;
+  class G2 gate;
+  class RULES banner;
+  style S4 fill:#f6f8f6,stroke:#9bb5a3
+  style S5 fill:#f6f8f6,stroke:#9bb5a3
+  style S6 fill:#f6f8f6,stroke:#9bb5a3
+  style S7 fill:#fdf8ec,stroke:#C8922A
+  style ROW fill:#ffffff,stroke:#ffffff,stroke-width:0px

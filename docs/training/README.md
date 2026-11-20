@@ -1,16 +1,21 @@
 # Training material
 
-| File | What |
-|---|---|
-| [workflow_overview.png](workflow_overview.png) | One-slide overview of the NDAC project workflow with Claude Code |
-| [workflow_overview.mmd](workflow_overview.mmd) | Its Mermaid source: edit this, then re-render |
+Two slides for onboarding students and partners (PNG, ~16:9, 2352 px wide):
 
-Re-render (local, needs Node.js; uses the installed Chrome or Edge):
+| Slide | File | Source (edit this) |
+|---|---|---|
+| 1 · Get ready (once per person) | [slide1_get_ready.png](slide1_get_ready.png) | [slide1_get_ready.mmd](slide1_get_ready.mmd) |
+| 2 · Every research project | [slide2_every_project.png](slide2_every_project.png) | [slide2_every_project.mmd](slide2_every_project.mmd) |
+
+Re-render after editing a .mmd (local, needs Node.js; uses the installed Chrome):
 
 ```powershell
 '{"executablePath":"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe","headless":true}' | Out-File -Encoding ascii $env:TEMP\pp.json
 $env:PUPPETEER_SKIP_DOWNLOAD = "1"
-npx --yes @mermaid-js/mermaid-cli@12.2.0 -i workflow_overview.mmd -o workflow_overview.png -p $env:TEMP\pp.json --backgroundColor white --scale 3
+npx --yes @mermaid-js/mermaid-cli@12.2.0 -i slide1_get_ready.mmd -o slide1_get_ready.png -p $env:TEMP\pp.json --backgroundColor white --scale 3
 ```
 
-For Edge, use `C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe` as the path.
+For Edge, use `C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe` as the path
+(backslashes doubled, because it goes inside JSON).
+Never write `\n...` inside a Windows path in a label (e.g. `...\Projects\ndac-foundation`):
+Mermaid renders it as a line break, even when escaped.
