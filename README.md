@@ -7,8 +7,7 @@ documents, data-governance checks and Claude helpers.
 ## Install (once per person)
 
 You need: **git**, **VS Code** with the **Claude Code** extension (signed in with your
-USask account), and **Python**. The repo is private: create a GitHub account and ask Thuan
-for an invite first.
+USask account), and **Python**. No GitHub account is needed to install.
 
 **Windows** (in a VS Code terminal; replace `<NSID>` with yours):
 

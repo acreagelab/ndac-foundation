@@ -18,7 +18,7 @@ flowchart TB
   end
   subgraph S2["2 · INSTALL NDAC-FOUNDATION"]
     direction TB
-    B1["Create a <b>GitHub</b> account and<br/>ask Thuan for an invite to<br/><b>thuanhavan/ndac-foundation</b>"] --> B2["Create <b>C:\&lt;NSID&gt;\Projects</b>, then in<br/>VS Code → Terminal → New Terminal:<br/><i>cd C:\&lt;NSID&gt;\Projects</i><br/><i>git clone https://github.com/thuanhavan/ndac-foundation</i>"] --> B3["Run the installer:<br/><i>powershell -ExecutionPolicy Bypass</i><br/><i>-File ndac-foundation/install.ps1</i>"] --> B4["Updates later: in that folder run<br/><i>git pull</i><br/>then run install.ps1 again"]
+    B2["Create <b>C:\&lt;NSID&gt;\Projects</b>, then in<br/>VS Code → Terminal → New Terminal:<br/><i>cd C:\&lt;NSID&gt;\Projects</i><br/><i>git clone https://github.com/thuanhavan/ndac-foundation</i>"] --> B3["Run the installer:<br/><i>powershell -ExecutionPolicy Bypass</i><br/><i>-File ndac-foundation/install.ps1</i>"] --> B4["Updates later: in that folder run<br/><i>git pull</i><br/>then run install.ps1 again"]
   end
   subgraph S3["3 · CHECK IT WORKS"]
     direction TB
@@ -33,7 +33,7 @@ flowchart TB
   classDef step fill:#ffffff,stroke:#275D38,stroke-width:1.5px,color:#1b1b1b;
   classDef cmd fill:#eef2f7,stroke:#46607a,stroke-width:1.5px,color:#1b1b1b;
   classDef banner fill:#275D38,stroke:#275D38,color:#ffffff;
-  class A1,A2,A3,A4,B1,C1,C2,C4 step;
+  class A1,A2,A3,A4,C1,C2,C4 step;
   class B2,B3,B4 cmd;
   class NEXT banner;
   style S1 fill:#f4f6f9,stroke:#9fb0c2
