@@ -6,18 +6,33 @@ documents, data-governance checks and Claude helpers.
 
 ## Install (once per person)
 
-The repo is private: ask Thuan for access on GitHub first, and make sure git can
-authenticate to GitHub (for example via Git Credential Manager). Then, in Claude Code:
+You need: **git**, **VS Code** with the **Claude Code** extension (signed in with your
+USask account), and **Python**. The repo is private: create a GitHub account and ask Thuan
+for an invite first.
 
+**Windows** (in a VS Code terminal; replace `<NSID>` with yours):
+
+```powershell
+mkdir C:\<NSID>\Projects
+git clone https://github.com/thuanhavan/ndac-foundation C:\<NSID>\Projects\ndac-foundation
+powershell -ExecutionPolicy Bypass -File C:\<NSID>\Projects\ndac-foundation\install.ps1
+setx PROJECTS_ROOT C:\<NSID>\Projects
 ```
-/plugin marketplace add https://github.com/thuanhavan/ndac-foundation
-/plugin install ndac-foundation@ndac-foundation
-```
 
-Get updates with `/plugin marketplace update ndac-foundation`.
+Restart VS Code, open the Claude panel, type `/` and check that `init-data-project` and
+`export-check` are listed.
 
-Also needed on your machine: git; conda (Miniforge or Anaconda); Node.js LTS if you want
-to render the diagrams to PNG.
+**Linux / HPC:** `git clone ... ~/ndac-foundation && sh ~/ndac-foundation/install.sh`
+
+**Update:** `git -C C:\<NSID>\Projects\ndac-foundation pull`, then run `install.ps1` again.
+
+The installer copies the skills into `~/.claude/skills/` and the agents into
+`~/.claude/agents/`. Anything it replaces is backed up first to `~/.claude/backups/`.
+
+Why not `/plugin install`? USask's Claude Code policy only allows plugin marketplaces on
+`gitlab.usask.ca`. If NDAC gets a group there, the plugin can move and install with
+`/plugin marketplace add <gitlab url>` + `/plugin install ndac-foundation@ndac-foundation`;
+the repo is already laid out as a plugin. Skills then appear as `ndac-foundation:<skill>`.
 
 ## What you can ask Claude
 
