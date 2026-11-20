@@ -14,7 +14,7 @@ flowchart TB
   direction LR
   subgraph S4["4 · START A PROJECT"]
     direction TB
-    D1["Ask Claude:<br/><i>“Start a new project<br/>called wetland_mb”</i>"] --> D2["File → Open Folder →<br/><b>C:\&lt;NSID&gt;\Projects\wetland_mb</b><br/>(Claude now reads its CLAUDE.md)"] --> D3["Ask Claude to run<br/><b>init_project.ps1</b><br/>(git + NDAC push guard)"] --> D4["Fill CLAUDE.md: purpose,<br/>security zone, data steward"]
+    D1["Open <b>VS Code</b> → File →<br/><b>Open Folder</b> → C:\&lt;NSID&gt;\Projects"] --> D2["Open Claude: click the<br/><b>Claude icon</b> in the sidebar"] --> D3["Ask Claude:<br/><i>“Start a new project<br/>called wetland_mb”</i>"] --> D4["File → Open Folder →<br/><b>C:\&lt;NSID&gt;\Projects\wetland_mb</b><br/>and open Claude again<br/>(it now reads the project's CLAUDE.md)"] --> D5["Ask Claude:<br/><i>“Run init_project.ps1 and<br/>help me fill in CLAUDE.md”</i><br/>(git, push guard, purpose,<br/>security zone, data steward)"]
   end
   subgraph S5["5 · PLAN THE RESEARCH"]
     direction TB
@@ -38,8 +38,8 @@ flowchart TB
   classDef ask fill:#e6f0e8,stroke:#275D38,stroke-width:1.5px,color:#1b1b1b;
   classDef gate fill:#fff4d6,stroke:#C8922A,stroke-width:2px,color:#1b1b1b;
   classDef banner fill:#275D38,stroke:#275D38,color:#ffffff;
-  class D2,D4,E1,E2,E3,F3,F4,G1,G3,G4 step;
-  class D1,D3,F1,F2 ask;
+  class D1,D2,D4,E1,E2,E3,F3,F4,G1,G3,G4 step;
+  class D3,D5,F1,F2 ask;
   class G2 gate;
   class RULES banner;
   style S4 fill:#f6f8f6,stroke:#9bb5a3
