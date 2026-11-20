@@ -29,6 +29,12 @@ Work through this list once, then delete this file. Claude can help with each st
 10. **People**: add yourself and collaborators to [docs/contributions.md](docs/contributions.md).
     Outputs acknowledge NDAC: [docs/ACKNOWLEDGEMENT.md](docs/ACKNOWLEDGEMENT.md).
 
+**On Fir (Alliance HPC)** instead of steps 3, 4 and 6, on a login node:
+`bash scripts/setup_fir_env.sh` (no conda on Alliance: modules + virtualenv), create `.env`
+with `DATA_ROOT=/project/<group>/...`, then `bash init_project.sh`. Fill `--account` in
+`scripts/job_template.sbatch`. Check with the data steward that the project's security zone
+is allowed on Fir before copying data there. See CLAUDE.md, "Running on Fir".
+
 The ndac-foundation plugin provides `/export-check`, `/adopt-project`, the NDAC data rules
 skill, and the pii-scanner, metadata-tagger, repo-auditor, reviewer and researcher agents.
 

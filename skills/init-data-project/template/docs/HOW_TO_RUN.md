@@ -29,6 +29,26 @@ On Linux / HPC (bash): `python -u ... 2>&1 | tee logs/TODO_v1.log`.
 python scripts/compare_runs.py TODO --sort <key_metric> --save
 ```
 
+## On Fir (Alliance HPC)
+
+Once per session, on a login node:
+
+```bash
+module load StdEnv/2023 python/3.12 gdal
+source ~/envs/<PROJECT_NAME>/bin/activate
+cd ~/projects/<PROJECT_NAME>        # wherever the project is cloned on Fir
+```
+
+Run a version as a Slurm job (commit first; outputs land in `data/outputs/...`, the job log in `logs/`):
+
+```bash
+sbatch --export=ALL,SUB=TODO,VER=v1_baseline scripts/job_template.sbatch
+squeue -u $USER                     # job status
+tail -f logs/ndac-run-<jobid>.out   # follow the log
+```
+
+Then compare as usual: `python scripts/compare_runs.py TODO`.
+
 ## Diagrams
 
 ```powershell

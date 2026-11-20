@@ -34,8 +34,11 @@ get the change when they update the plugin. Existing projects are not touched.
 3. Show the "Created:" list.
 4. Offer to run `powershell -ExecutionPolicy Bypass -File "<project_dir>\init_project.ps1"`
    (git init, NDAC push guard, notebook output stripping, ignore checks). Only if the user
-   agrees. On Linux/HPC, do the same steps by hand: `git init -b main`, copy
-   `.githooks/pre-push` to `.git/hooks/pre-push` and `chmod +x` it, `python -m nbstripout --install`.
+   agrees. On Linux / Fir use `bash "<project_dir>/init_project.sh"` instead, and for the
+   Python environment `bash scripts/setup_fir_env.sh` (Alliance clusters don't support conda).
+   Heavy runs on Fir go through `scripts/job_template.sbatch`; see the project's CLAUDE.md,
+   "Running on Fir". If the user is on Fir, remind them to confirm with the data steward that
+   the project's security zone is allowed there before copying data.
 5. Remind the user of the first steps, in this order, and offer to help with each:
    - CLAUDE.md TODOs: purpose, people (data steward), conda env, input security zone
      (A_Public / B_Internal / C_Limited / D_Restric), identifiers present. Ask for the zone;

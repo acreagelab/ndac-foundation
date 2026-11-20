@@ -54,6 +54,19 @@ TODO: only commands verified to work, in order. Keep [docs/HOW_TO_RUN.md](docs/H
 - Shapely 2.x: `union_all()`, not `unary_union`. Shapefile DBF names truncate at 10 chars:
   verify join keys after any shapefile write. Write CRS and nodata on every raster output.
 
+## Running on Fir (Alliance HPC; delete this section if unused)
+- Environment: no conda on Alliance. `bash scripts/setup_fir_env.sh` once on a login node
+  (modules + virtualenv in `~/envs/<project>`); it records versions in `requirements-fir.lock.txt`
+- Setup: `bash init_project.sh` (bash version of init_project.ps1)
+- Claude and light work (editing, small tests, downloads) on the LOGIN node; anything heavy
+  goes through Slurm: `sbatch --export=ALL,SUB=<subproject>,VER=<version> scripts/job_template.sbatch`
+- Compute nodes have no internet: download data (incl. Earth Engine) on a login node first
+- `DATA_ROOT` on Fir points to `/project/<group>/...` (backed up) or `/scratch/$USER/...`
+  (fast, NOT backed up, purged when old). Never keep the only copy of anything in /scratch
+- Before putting data on Fir, confirm with the data steward that its security zone is
+  allowed there (`C_Limited` / `D_Restric` usually needs explicit approval)
+- Commit before submitting jobs: run folders record the git commit; `-dirty` runs can't be reproduced
+
 ## Earth Engine (delete this section if unused)
 - Project ID comes from `EE_PROJECT` in `.env`; never hardcoded, never a personal Gmail
 - Default auth: ambient `earthengine authenticate` under the institutional identity

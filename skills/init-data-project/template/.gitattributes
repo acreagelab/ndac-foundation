@@ -1,0 +1,5 @@
+# Shell scripts must keep Unix (LF) line endings, or they break on Fir/Linux
+# after being committed from Windows.
+*.sh       text eol=lf
+*.sbatch   text eol=lf
+.githooks/* text eol=lf

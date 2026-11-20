@@ -24,6 +24,7 @@ data/**
 !data/**/.gitkeep
 !data/raw/README.md
 logs/**
+slurm-*.out
 !logs/**/
 !logs/.gitkeep
 /outputs/
