@@ -1,0 +1,13 @@
+project:
+  name: <PROJECT_NAME>
+  seed: 42
+  # Metric CRS for all measurement. SK local: EPSG:32613 (UTM 13N); AB: 32611/32612;
+  # MB: 32614; prairie-wide area stats: EPSG:3347. NEVER EPSG:3857 for analysis.
+  crs_analysis: "EPSG:32613"
+
+paths:
+  # relative to project root; absolute roots come from DATA_ROOT in .env
+  raw: data/raw
+  interim: data/interim
+  processed: data/processed
+  outputs: data/outputs

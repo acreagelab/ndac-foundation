@@ -1,0 +1,26 @@
+#!/bin/sh
+# NDAC push guard — blocks pushes to unapproved remotes (research-data leak control).
+# Installed into <repo>/.git/hooks/pre-push by hooks/install-pre-push.ps1.
+#
+# To publish a repo deliberately (after running /export-check on it):
+#   git config ndac.pushApproved true
+remote_url="$2"
+
+if [ "$(git config --get ndac.pushApproved)" = "true" ]; then
+    exit 0
+fi
+
+case "$remote_url" in
+    *usask.ca*|*git.usask*)
+        exit 0
+        ;;
+esac
+
+echo "BLOCKED by NDAC push guard: unapproved remote" >&2
+echo "  remote: $remote_url" >&2
+echo "" >&2
+echo "This repository belongs to an NDAC research project. Before publishing:" >&2
+echo "  1. Run /export-check on the repo (configs can leak paths, extents, emails)" >&2
+echo "  2. Confirm licence + deposit decision if it contains derived data" >&2
+echo "  3. Approve deliberately:  git config ndac.pushApproved true" >&2
+exit 1

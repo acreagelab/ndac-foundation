@@ -1,0 +1,8 @@
+# Declare EVERY import this project uses, pinned exactly (==).
+# Once the conda env is chosen:  conda run -n <env> python -m pip freeze
+# then keep only the packages this project imports (plus their pins).
+# Floor pins (>=) do not reproduce — e.g. Shapely 2.0 changed geometry semantics.
+
+python-dotenv==1.1.0
+pyyaml==6.0.2
+numpy==2.4.4

@@ -1,0 +1,53 @@
+# --- Credentials: non-negotiable, keep first ---
+.env
+.env.*
+!.env.example
+.ee_auth/
+.ee_accounts/
+.ee_personal_account/
+.gcloud_config/
+**/credentials
+*credentials*.json
+*service-account*.json
+*-key.json
+*.pem
+*.key
+
+# --- Data & large outputs (folder structure kept via .gitkeep) ---
+data/**
+!data/**/
+!data/**/.gitkeep
+!data/raw/README.md
+logs/**
+!logs/**/
+!logs/.gitkeep
+figures/
+models/
+*.tif
+*.tiff
+*.nc
+*.h5
+*.parquet
+*.gpkg
+*.zip
+*.rar
+*.7z
+
+# --- Environments & caches ---
+.venv/
+venv/
+.deps/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+*.egg-info/
+
+# --- OS / editor artifacts ---
+Thumbs.db
+Desktop.ini
+~$*
+
+# --- Machine-local Claude Code state ---
+.claude/settings.local.json
+.claude/*.lock

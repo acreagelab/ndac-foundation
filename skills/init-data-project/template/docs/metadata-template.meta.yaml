@@ -1,0 +1,15 @@
+# Copy next to a dataset as <dataset-name>.meta.yaml, or let the metadata-tagger
+# agent generate/validate it. All nine fields are required (NDAC standard).
+title: TODO
+description: TODO
+creator: <AUTHOR>, <EMAIL>, NDAC — University of Saskatchewan
+spatial_extent: "TODO — bounding box, WGS84 lon/lat"
+temporal_range: "TODO — ISO 8601 start/end"
+crs: "TODO — EPSG code"
+units: TODO
+processing_steps:
+  - "TODO — source data → this output, ordered"
+restrictions: >
+  TODO — security zone (A_Public / B_Internal / C_Limited / D_Restric), any
+  OCAP®/CARE conditions, data-sharing-agreement terms, and export conditions.
+  Field/operator-level data is C_Limited minimum.

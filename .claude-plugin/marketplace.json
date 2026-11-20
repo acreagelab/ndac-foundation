@@ -1,0 +1,16 @@
+{
+  "name": "ndac-foundation",
+  "owner": {
+    "name": "Nutrien Digital Agriculture Centre, University of Saskatchewan"
+  },
+  "description": "NDAC shared Claude Code plugins.",
+  "plugins": [
+    {
+      "name": "ndac-foundation",
+      "source": "./",
+      "description": "NDAC project template and the init-data-project skill.",
+      "category": "foundation",
+      "keywords": ["ndac", "project-template", "scaffold"]
+    }
+  ]
+}
