@@ -1,0 +1,49 @@
+---
+title: "Slide 3 · Using ndac-foundation on Fir (Alliance HPC)"
+config:
+  flowchart:
+    wrappingWidth: 900
+    nodeSpacing: 28
+    rankSpacing: 40
+    padding: 12
+---
+%% Training slide 3. Edit, then re-render (see docs/training/README.md).
+%% Never write "\n..." in Windows paths: Mermaid renders it as a line break, even escaped.
+flowchart TB
+  subgraph ROW[" "]
+  direction LR
+  subgraph S1["1 · CONNECT VS CODE TO FIR"]
+    direction TB
+    A1["VS Code → Extensions →<br/>install <b>Remote - SSH</b>"] --> A2["Settings → search <i>useLocalServer</i><br/>→ set to <b>off</b><br/>(the Duo prompt then shows in the Terminal)"] --> A3["Ctrl+Shift+P →<br/><i>Remote-SSH: Connect to Host</i><br/>→ <b>&lt;alliance-user&gt;@fir.alliancecan.ca</b>"] --> A4["In the Terminal: type <b>1</b>,<br/>approve <b>Duo</b> on your phone<br/>(every new connection)"]
+  end
+  subgraph S2["2 · INSTALL ON FIR (once)"]
+    direction TB
+    B1["In the Fir window: Extensions →<br/>Claude Code → <b>Install in SSH: fir.alliancecan.ca</b><br/>and sign in with your USask account"] --> B2["Terminal → New Terminal:<br/><i>cd ~</i><br/><i>git clone https://github.com/thuanhavan/ndac-foundation</i><br/><i>bash ndac-foundation/install.sh</i>"] --> B3["Tell Claude where projects go:<br/><i>echo 'export PROJECTS_ROOT=/project/def-&lt;PI&gt;/&lt;user&gt;'</i><br/><i>>> ~/.bashrc</i><br/>then reload the VS Code window"]
+  end
+  subgraph S3["3 · OPEN A PROJECT"]
+    direction TB
+    C1["File → <b>Open Folder</b> →<br/>/project/def-&lt;PI&gt;/&lt;user&gt;<br/>and click the <b>Claude icon</b>"] --> C2["Ask Claude:<br/><i>“Start a new project<br/>called wetland_mb”</i><br/>(or git clone an existing one)"] --> C3["Open the project folder, then ask:<br/><i>“Set up this project for Fir”</i><br/>(init_project.sh + setup_fir_env.sh)"]
+  end
+  subgraph S4["4 · RUN ON THE CLUSTER"]
+    direction TB
+    D1["Commit, then ask Claude:<br/><i>“Submit v2_add_s2 of et_mapping<br/>as a Slurm job”</i>"] --> D2["Claude runs <b>sbatch</b><br/>with scripts/job_template.sbatch<br/>(first time: set your --account)"] --> D3["Check progress:<br/><i>squeue -u $USER</i><br/>log in <b>logs/</b>"] --> D4["Ask Claude:<br/><i>“Compare the runs”</i><br/>then log keep / drop"]
+  end
+  S1 ==> S2 ==> S3 ==> S4
+  end
+
+  RULES["<b>On Fir:</b>&nbsp; Claude and editing on the login node, heavy work only through sbatch &nbsp;·&nbsp; compute nodes have no internet<br/>keep results in /project (/scratch is purged) &nbsp;·&nbsp; check your data's security zone is allowed on Fir before copying it"]
+  ROW ~~~ RULES
+
+  classDef step fill:#ffffff,stroke:#275D38,stroke-width:1.5px,color:#1b1b1b;
+  classDef ask fill:#e6f0e8,stroke:#275D38,stroke-width:1.5px,color:#1b1b1b;
+  classDef cmd fill:#eef2f7,stroke:#46607a,stroke-width:1.5px,color:#1b1b1b;
+  classDef banner fill:#275D38,stroke:#275D38,color:#ffffff;
+  class A1,A2,A4,B1,C1,D2,D3 step;
+  class C2,C3,D1,D4 ask;
+  class A3,B2,B3 cmd;
+  class RULES banner;
+  style S1 fill:#f4f6f9,stroke:#9fb0c2
+  style S2 fill:#f4f6f9,stroke:#9fb0c2
+  style S3 fill:#f6f8f6,stroke:#9bb5a3
+  style S4 fill:#f6f8f6,stroke:#9bb5a3
+  style ROW fill:#ffffff,stroke:#ffffff,stroke-width:0px

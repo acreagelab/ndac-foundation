@@ -1,11 +1,12 @@
 # Training material
 
-Two slides for onboarding students and partners (PNG, ~16:9, 2352 px wide):
+Slides for onboarding students and partners (PNG, ~16:9, 2352 px wide):
 
 | Slide | File | Source (edit this) |
 |---|---|---|
 | 1 · Get ready (once per person) | [slide1_get_ready.png](slide1_get_ready.png) | [slide1_get_ready.mmd](slide1_get_ready.mmd) |
 | 2 · Every research project | [slide2_every_project.png](slide2_every_project.png) | [slide2_every_project.mmd](slide2_every_project.mmd) |
+| 3 · Using it on Fir (Alliance HPC) | [slide3_fir.png](slide3_fir.png) | [slide3_fir.mmd](slide3_fir.mmd) |
 
 Re-render after editing a .mmd (local, needs Node.js; uses the installed Chrome):
 
