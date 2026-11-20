@@ -20,6 +20,7 @@ def project(tmp_path, monkeypatch):
     (cdir / "base.yaml").write_text("params: {b: {y: 20}}\n", encoding="utf-8")
     (cdir / "v1.yaml").write_text("version: {name: v1}\nparams: {a: 100}\n", encoding="utf-8")
     monkeypatch.setattr(common, "ROOT", tmp_path)
+    monkeypatch.delenv("RUNS_ROOT", raising=False)   # set inside Fir jobs
     return tmp_path
 
 
@@ -80,6 +81,22 @@ def test_manifest_records_config_inputs_and_git(project):
     resolved = yaml.safe_load((run / "config_resolved.yaml").read_text(encoding="utf-8"))
     assert "_sources" not in resolved and resolved["params"]["a"] == 100
     assert json.loads((run / "metrics.json").read_text(encoding="utf-8")) == {"rmse": 0.5}
+
+
+def test_runs_root_env_redirects_run_folders(project, tmp_path, monkeypatch):
+    monkeypatch.setenv("RUNS_ROOT", str(tmp_path / "fast"))
+    run = common.new_run_dir("sp", "v1")
+    assert run.parent == tmp_path / "fast" / "sp" / "v1"
+
+
+def test_manifest_records_slurm_job(project, monkeypatch):
+    monkeypatch.setenv("SLURM_JOB_ID", "4242")
+    monkeypatch.setenv("SLURM_CPUS_PER_TASK", "8")
+    monkeypatch.setenv("STAGE", "1")
+    run = common.new_run_dir("sp", "v1")
+    m = json.loads(common.write_run_manifest(run, common.load_config(subproject="sp", version="v1"))
+                   .read_text(encoding="utf-8"))
+    assert m["slurm"]["job_id"] == "4242" and m["slurm"]["staged_to_local_disk"] is True
 
 
 def test_seed_everything_is_reproducible():

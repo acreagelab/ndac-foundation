@@ -1,0 +1,37 @@
+# Fir / Alliance HPC settings for this project, used by scripts/fir_plan.py and the job script.
+# $USER is expanded. Anything the cluster can report itself (time limits, past job usage,
+# quotas) is read live from Fir with sinfo / sacct / diskusage_report, not stored here.
+fir:
+  account: def-TODO                 # your PI's allocation, e.g. def-smith
+
+  storage:
+    # Code, configs, docs, raw inputs and FINAL results. Backed up; shared with your group.
+    project: /project/def-TODO/$USER/<PROJECT_NAME>
+    # Big intermediate files and large run outputs. Fast, NOT backed up, purged when old:
+    # never keep the only copy of anything here. Copy final results back to project.
+    scratch: /scratch/$USER/<PROJECT_NAME>
+
+  # First run of a version, when there is no history yet. Make it a SMALL test run.
+  defaults:
+    time: "01:00:00"
+    mem_gb: 8
+    cpus: 4
+    gpus: 0
+
+  # Safety margin on top of the longest / biggest previous run of the same version.
+  margins:
+    time: 1.5
+    mem: 1.3
+
+  thresholds:
+    stage_input_gb: 1          # inputs bigger than this -> copy to the node's local disk first
+    stage_many_files: 1000     # or more files than this (many small files are slow on /project)
+    scratch_output_gb: 50      # runs that wrote more than this -> outputs go to scratch
+    login_max_minutes: 10      # below this AND login_max_mem_gb -> fine as a quick test on the login node
+    login_max_mem_gb: 4
+
+  # null = ask the cluster (sinfo). Set e.g. "7-00:00:00" only to override.
+  max_walltime: null
+
+# Per-version overrides go in the version config, e.g. subprojects/<name>/configs/v2.yaml:
+#   resources: {cpus: 16, mem_gb: 64, gpus: 1, time: "12:00:00"}

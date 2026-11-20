@@ -1,0 +1,50 @@
+---
+title: "Slide 4 · On Fir, Claude picks the right node and storage"
+config:
+  flowchart:
+    wrappingWidth: 900
+    nodeSpacing: 28
+    rankSpacing: 40
+    padding: 12
+---
+%% Training slide 4. Edit, then re-render (see docs/training/README.md).
+flowchart TB
+  subgraph ROW[" "]
+  direction LR
+  subgraph S1["1 · YOU ASK"]
+    direction TB
+    A1["Ask Claude:<br/><i>“Run v2_add_s2 of et_mapping<br/>on the cluster”</i>"] --> A2["Claude checks your code is committed<br/>and runs <b>fir_plan.py</b>"]
+  end
+  subgraph S2["2 · CLAUDE MEASURES"]
+    direction TB
+    B1["<b>Your inputs</b><br/>total size and number of files"] --> B2["<b>Earlier runs</b><br/>real time and peak memory<br/>(from Slurm's records)"] --> B3["<b>Fir's limits</b><br/>maximum job time (asked live)"] --> B4["<b>Your settings</b><br/>configs/fir.yaml<br/>(account, storage paths)"]
+  end
+  subgraph S3["3 · CLAUDE DECIDES"]
+    direction TB
+    C1["<b>Where it runs</b><br/>tiny → login node<br/>first time → small test job<br/>heavy, long or GPU → batch job"] --> C2["<b>How much to ask for</b><br/>time and memory =<br/>biggest earlier run + margin"] --> C3["<b>Where data goes</b><br/>big inputs → node's local disk<br/>huge outputs → /scratch<br/>everything else → /project"] --> C4["<b>Too long for Fir?</b><br/>split into smaller jobs<br/>or save checkpoints"]
+  end
+  subgraph S4["4 · YOU APPROVE, IT RUNS"]
+    direction TB
+    D1["Claude shows the plan<br/>→ you say <b>yes</b>"] --> D2["Job submitted<br/>(<b>sbatch</b>)"] --> D3["Results copied back to <b>/project</b><br/>even if the job fails<br/>or nears its time limit"] --> D4["Real time and memory saved<br/>→ <b>next plan is more accurate</b>"]
+  end
+  S1 ==> S2 ==> S3 ==> S4
+  end
+
+  RULES["<b>Fir storage:</b>&nbsp; /project = code, raw data, final results (backed up) &nbsp;·&nbsp; /scratch = big temporary files (NOT backed up, purged)<br/>node's local disk = fastest, only during a job &nbsp;·&nbsp; nearline = long-term archive &nbsp;·&nbsp; /home = small personal files"]
+  ROW ~~~ RULES
+
+  classDef step fill:#ffffff,stroke:#275D38,stroke-width:1.5px,color:#1b1b1b;
+  classDef ask fill:#e6f0e8,stroke:#275D38,stroke-width:1.5px,color:#1b1b1b;
+  classDef measure fill:#eef2f7,stroke:#46607a,stroke-width:1.5px,color:#1b1b1b;
+  classDef gate fill:#fff4d6,stroke:#C8922A,stroke-width:2px,color:#1b1b1b;
+  classDef banner fill:#275D38,stroke:#275D38,color:#ffffff;
+  class A1 ask;
+  class A2,C1,C2,C3,C4,D2,D3,D4 step;
+  class B1,B2,B3,B4 measure;
+  class D1 gate;
+  class RULES banner;
+  style S1 fill:#f6f8f6,stroke:#9bb5a3
+  style S2 fill:#f4f6f9,stroke:#9fb0c2
+  style S3 fill:#f6f8f6,stroke:#9bb5a3
+  style S4 fill:#fdf8ec,stroke:#C8922A
+  style ROW fill:#ffffff,stroke:#ffffff,stroke-width:0px

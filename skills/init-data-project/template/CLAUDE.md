@@ -59,7 +59,11 @@ TODO: only commands verified to work, in order. Keep [docs/HOW_TO_RUN.md](docs/H
   (modules + virtualenv in `~/envs/<project>`); it records versions in `requirements-fir.lock.txt`
 - Setup: `bash init_project.sh` (bash version of init_project.ps1)
 - Claude and light work (editing, small tests, downloads) on the LOGIN node; anything heavy
-  goes through Slurm: `sbatch --export=ALL,SUB=<subproject>,VER=<version> scripts/job_template.sbatch`
+  goes through Slurm. Before every job run `python scripts/fir_plan.py <subproject> <version>`:
+  it sizes time/memory/CPUs from earlier runs (sacct), decides staging to node-local disk and
+  where outputs go, and prints the `sbatch` command. Show the plan; submit only when the user agrees
+- Settings: `configs/fir.yaml` (account, /project and /scratch paths, thresholds); per-version
+  `resources: {cpus, mem_gb, gpus, time}` in the version config. Rules: the `fir-resources` skill
 - Compute nodes have no internet: download data (incl. Earth Engine) on a login node first
 - `DATA_ROOT` on Fir points to `/project/<group>/...` (backed up) or `/scratch/$USER/...`
   (fast, NOT backed up, purged when old). Never keep the only copy of anything in /scratch

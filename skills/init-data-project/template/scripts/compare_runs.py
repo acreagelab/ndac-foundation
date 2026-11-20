@@ -35,6 +35,8 @@ def collect(subproject: str, outputs: Path) -> list[dict]:
             row["git_sha"] = (git.get("sha") or "")[:7]
             row["dirty"] = git.get("dirty")
             row["seed"] = m.get("seed")
+            if m.get("slurm"):
+                row["job"] = m["slurm"].get("job_id")
         metrics = json.loads(metrics_file.read_text(encoding="utf-8"))
         for key, val in metrics.items():
             row[key] = val if not isinstance(val, (dict, list)) else json.dumps(val)
@@ -48,9 +50,13 @@ def main() -> None:
     p.add_argument("--sort", help="metric to sort by (ascending)")
     p.add_argument("--desc", action="store_true", help="sort descending")
     p.add_argument("--save", action="store_true", help="write report/<today>/<subproject>/run_comparison.csv")
+    p.add_argument("--root", action="append",
+                   help="extra run root to include (repeatable), e.g. /scratch/$USER/<project>/data/outputs")
     a = p.parse_args()
 
     rows = collect(a.subproject, PROJECT_ROOT / "data" / "outputs")
+    for extra in a.root or []:
+        rows += collect(a.subproject, Path(extra))
     if not rows:
         sys.exit(f"No runs with metrics.json under data/outputs/{a.subproject}/")
     cols: list[str] = []

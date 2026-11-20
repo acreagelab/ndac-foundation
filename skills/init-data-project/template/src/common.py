@@ -181,10 +181,17 @@ def new_run_dir(subproject: str, version: str, root: str | Path | None = None) -
         data/outputs/<subproject>/<version>/<YYYY-MM-DDTHHMMSS>_<sha7>[-dirty]/
 
     Re-running the same version makes a new folder, so runs never overwrite each other.
+    The base folder is `root`, else the RUNS_ROOT environment variable (set by the Fir job
+    script, e.g. node-local disk or /scratch), else data/outputs.
     """
     _check_name(subproject, "sub-project")
     _check_name(version, "version")
-    base = resolve_path(root) if root else ROOT / "data" / "outputs"
+    if root:
+        base = resolve_path(root)
+    elif os.environ.get("RUNS_ROOT"):
+        base = Path(os.environ["RUNS_ROOT"])
+    else:
+        base = ROOT / "data" / "outputs"
     git = git_state()
     tag = (git["sha"] or "nogit")[:7] + ("-dirty" if git["dirty"] else "")
     stamp = datetime.now().strftime("%Y-%m-%dT%H%M%S")
@@ -240,6 +247,24 @@ def _requirement_versions() -> dict:
     return found
 
 
+_SLURM_VARS = {"job_id": "SLURM_JOB_ID", "array_task_id": "SLURM_ARRAY_TASK_ID",
+               "job_name": "SLURM_JOB_NAME", "partition": "SLURM_JOB_PARTITION",
+               "nodes": "SLURM_JOB_NODELIST", "cpus_per_task": "SLURM_CPUS_PER_TASK",
+               "mem_per_node_mb": "SLURM_MEM_PER_NODE", "gpus": "SLURM_GPUS_ON_NODE"}
+
+
+def slurm_info() -> dict | None:
+    """Slurm job details when running inside a job (None otherwise).
+
+    scripts/fir_plan.py uses job_id to look up the run's real time and memory with sacct.
+    """
+    if not os.environ.get("SLURM_JOB_ID"):
+        return None
+    info = {k: os.environ[v] for k, v in _SLURM_VARS.items() if os.environ.get(v)}
+    info["staged_to_local_disk"] = os.environ.get("STAGE") == "1"
+    return info
+
+
 def write_run_manifest(
     out_dir: str | Path,
     config: dict | str | Path | None = None,
@@ -277,6 +302,7 @@ def write_run_manifest(
         "config_layers": [{"path": str(s), "sha256": sha256_file(s)} for s in sources if s.exists()],
         "inputs": [_describe_input(resolve_path(p)) for p in (inputs or [])],
         "command": " ".join(sys.argv),
+        "slurm": slurm_info(),
     }
     if extra:
         manifest.update(extra)

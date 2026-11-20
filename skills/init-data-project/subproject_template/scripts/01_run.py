@@ -29,7 +29,11 @@ def main() -> None:
     seed_everything(cfg["project"]["seed"])
     run_dir = new_run_dir(SUBPROJECT, a.version)
     inputs = [resolve_path(v) for v in (cfg.get("inputs") or {}).values()]
-    print(f"Run folder: {run_dir.relative_to(ROOT)}")
+    try:
+        shown = run_dir.relative_to(ROOT)
+    except ValueError:          # run folder outside the project (node-local disk or /scratch on Fir)
+        shown = run_dir
+    print(f"Run folder: {shown}")
 
     # ---- TODO: the analysis. Read inputs, write outputs into run_dir. ----------------
     metrics: dict = {}  # e.g. {"rmse": 0.41, "bias": -0.02, "n_fields": 112}

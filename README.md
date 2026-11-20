@@ -44,6 +44,7 @@ the repo is already laid out as a plugin. Skills then appear as `ndac-foundation
 | "/export-check this figure / table / repo" | Disclosure check: identifiers, small cells, zone crossing, NDAC acknowledgement |
 | "/adopt-project on C:\...\old_project" | Brings an existing project up to the baseline, credential-safe |
 | "use the pii-scanner / reviewer / repo-auditor / metadata-tagger / researcher agent on ..." | Specialist checks (see below) |
+| On Fir: "run v2 of et_mapping on the cluster" | Plans node, time, memory, CPUs/GPUs and storage from real measurements (`fir_plan.py`), shows the plan, submits the Slurm job after you agree |
 
 ## What's inside
 
@@ -55,6 +56,7 @@ the repo is already laid out as a plugin. Skills then appear as `ndac-foundation
 | `export-check` | Pre-export disclosure control; PASS / BLOCKED per artifact |
 | `adopt-project` | Bring an existing project under git and up to the baseline |
 | `ndac-data-rules` | Prairie data-governance and CRS rules, applied in any project |
+| `fir-resources` | On Fir: right node (login / interactive / batch) and right storage (/project, /scratch, node-local disk, nearline) |
 
 **Agents**: `pii-scanner` (identifiers, PPID/LLD, small cells, credentials),
 `metadata-tagger` (`.meta.yaml` sidecars), `repo-auditor` (baseline scorecard),

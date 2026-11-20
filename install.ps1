@@ -42,4 +42,4 @@ Write-Host ""
 Write-Host "ndac-foundation $version installed."
 if (Test-Path $backup) { Write-Host "Backups of replaced items: $backup" }
 Write-Host "Restart Claude Code (or reload the VS Code window), then type / and look for"
-Write-Host "init-data-project, export-check, adopt-project, ndac-data-rules."
+Write-Host "init-data-project, export-check, adopt-project, ndac-data-rules, fir-resources."

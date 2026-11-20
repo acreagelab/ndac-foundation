@@ -39,15 +39,17 @@ source ~/envs/<PROJECT_NAME>/bin/activate
 cd ~/projects/<PROJECT_NAME>        # wherever the project is cloned on Fir
 ```
 
-Run a version as a Slurm job (commit first; outputs land in `data/outputs/...`, the job log in `logs/`):
+Run a version as a Slurm job (commit first). Plan it, then submit the command the plan prints:
 
 ```bash
-sbatch --export=ALL,SUB=TODO,VER=v1_baseline scripts/job_template.sbatch
-squeue -u $USER                     # job status
-tail -f logs/ndac-run-<jobid>.out   # follow the log
+python scripts/fir_plan.py TODO v1_baseline     # time, memory, CPUs, staging, output location
+sbatch ... scripts/job_template.sbatch          # the exact command printed by fir_plan
+squeue -u $USER                                 # job status
+tail -f logs/<job-name>-<jobid>.out             # follow the log
 ```
 
-Then compare as usual: `python scripts/compare_runs.py TODO`.
+Then compare: `python scripts/compare_runs.py TODO` (add `--root /scratch/$USER/<PROJECT_NAME>/data/outputs`
+if the plan sent outputs to scratch; copy final results back to /project).
 
 ## Diagrams
 
