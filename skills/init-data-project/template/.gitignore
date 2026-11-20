@@ -1,3 +1,8 @@
+# NDAC project .gitignore. Default stance: code, configs and docs are tracked;
+# DATA, MODELS, REPORTS and CREDENTIALS are not. To track a small, cleared file
+# deliberately (e.g. a lookup table), add a "!path/to/file" exception below and
+# note why in PROGRESS_REPORT.md. Never use "git add -f" to sneak data in.
+
 # --- Credentials: non-negotiable, keep first ---
 .env
 .env.*
@@ -13,7 +18,7 @@
 *.pem
 *.key
 
-# --- Data & large outputs (folder structure kept via .gitkeep) ---
+# --- Data folders (folder structure kept via .gitkeep) ---
 data/**
 !data/**/
 !data/**/.gitkeep
@@ -21,17 +26,77 @@ data/**
 logs/**
 !logs/**/
 !logs/.gitkeep
-figures/
-models/
+/outputs/
+/results/
+/figures/
+/models/
+/checkpoints/
+/runs/
+
+# --- Dated reports: can contain field-level tables -> never committed ---
+report/**
+!report/**/
+!report/**/.gitkeep
+
+# --- Data / model file types anywhere in the tree ---
+# tables
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.xlsm
+*.parquet
+*.feather
+*.sav
+*.dta
+*.rds
+*.RData
+*.sqlite
+*.db
+*.mdb
+*.accdb
+# vector GIS (shapefile parts, GeoJSON, KML, GeoPackage, file geodatabases)
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
+*.sbn
+*.sbx
+*.qix
+*.geojson
+*.kml
+*.kmz
+*.gpkg
+*.gdb/
+# raster / point cloud / arrays
 *.tif
 *.tiff
+*.jp2
+*.img
 *.nc
 *.h5
-*.parquet
-*.gpkg
+*.hdf
+*.zarr/
+*.las
+*.laz
+*.npy
+*.npz
+# models
+*.pkl
+*.pickle
+*.joblib
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.safetensors
+# archives
 *.zip
 *.rar
 *.7z
+*.tar
+*.gz
 
 # --- Environments & caches ---
 .venv/
@@ -42,12 +107,13 @@ __pycache__/
 .pytest_cache/
 .ipynb_checkpoints/
 *.egg-info/
+node_modules/
 
 # --- OS / editor artifacts ---
 Thumbs.db
 Desktop.ini
 ~$*
 
-# --- Machine-local Claude Code state ---
+# --- Machine-local Claude Code state (.claude/settings.json IS tracked) ---
 .claude/settings.local.json
 .claude/*.lock

@@ -1,5 +1,7 @@
 # Copy next to a dataset as <dataset-name>.meta.yaml, or let the metadata-tagger
-# agent generate/validate it. All nine fields are required (NDAC standard).
+# agent generate/validate it. The first nine fields are required (NDAC standard);
+# `acknowledgement` is required once the dataset is shared outside NDAC.
+# Sidecars for data/raw/ datasets go in data/processed/ (data/raw/ is read-only).
 title: TODO
 description: TODO
 creator: <AUTHOR>, <EMAIL>, NDAC — University of Saskatchewan
@@ -13,3 +15,6 @@ restrictions: >
   TODO — security zone (A_Public / B_Internal / C_Limited / D_Restric), any
   OCAP®/CARE conditions, data-sharing-agreement terms, and export conditions.
   Field/operator-level data is C_Limited minimum.
+acknowledgement: >
+  Data and facilities provided by the Nutrien Digital Agriculture Centre (NDAC),
+  University of Saskatchewan. (Use the official wording in docs/ACKNOWLEDGEMENT.md.)

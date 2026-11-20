@@ -1,0 +1,30 @@
+%% Pipeline for <PROJECT_NAME>. Edit this file, then: python scripts/render_diagrams.py pipeline
+%% - Group inputs by SECURITY ZONE so reviewers can see where restricted data goes.
+%% - Put the script path in each step's label (e.g. subprojects/et_mapping/scripts/01_run.py);
+%%   tests/test_docs.py fails if a .py path named here does not exist.
+%% - C_Limited data may only leave the pipeline after aggregation (RM/ecodistrict, >= 5 farms).
+flowchart LR
+  subgraph A["A_Public / B_Internal inputs"]
+    S1["Satellite imagery<br/>(e.g. Landsat / Sentinel-2 via Earth Engine)"]
+    S2["Weather / soil layers"]
+  end
+  subgraph C["C_Limited inputs"]
+    F1["Field boundaries,<br/>yield or sensor data"]
+  end
+
+  S1 --> P1["1. Prepare inputs<br/>TODO script"]
+  S2 --> P1
+  F1 --> P1
+  P1 --> P2["2. Model / analysis<br/>TODO script (per version)"]
+  P2 --> O[("Run outputs<br/>data/outputs/&lt;subproject&gt;/&lt;version&gt;/")]
+  O --> AG["3. Aggregate to RM / ecodistrict<br/>suppress cells &lt; 5 farms"]
+  AG --> R["Figures and report<br/>graph/ and report/ (dated)"]
+  R --> X{{"/export-check"}}
+  X --> PUB["Paper / talk / deposit<br/>with NDAC acknowledgement"]
+
+  classDef limited fill:#fde2e1,stroke:#b42318;
+  classDef public fill:#e6f0e8,stroke:#275D38;
+  classDef gate fill:#fff4d6,stroke:#C8922A;
+  class F1 limited;
+  class S1,S2 public;
+  class X gate;

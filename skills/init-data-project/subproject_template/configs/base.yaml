@@ -1,0 +1,13 @@
+# <SUBPROJECT>: settings shared by every version. Layered on top of configs/default.yaml;
+# each version file (configs/<version>.yaml) then overrides only what it changes.
+# Paths: "data/..." is relative to the project root; "${DATA_ROOT}/..." is the shared drive.
+
+subproject:
+  name: <SUBPROJECT>
+  research_question: TODO   # e.g. RQ1, from docs/research/objectives.md
+  key_metric: TODO          # fixed before running, e.g. rmse
+
+inputs: {}
+  # fields: ${DATA_ROOT}/<project>/fields.gpkg
+
+params: {}

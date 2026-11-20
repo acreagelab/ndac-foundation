@@ -1,18 +1,8 @@
 # ndac-foundation
 
-Claude Code plugin for Nutrien Digital Agriculture Centre (NDAC) projects.
-
-## What's inside
-
-| Skill | What it does |
-|---|---|
-| `ndac-foundation:init-data-project` | Creates a new project from the NDAC template, or adds today's `graph/<date>` and `report/<date>` folders to an existing project |
-
-The template is in [skills/init-data-project/template/](skills/init-data-project/template/).
-It sets up the data flow (`data/raw` read-only, then `interim`, `processed`, `outputs`),
-reproducibility helpers (`src/common.py`), Earth Engine config, `.gitignore` protection for
-credentials and data, and the NDAC push guard (`.githooks/pre-push`), which blocks pushes to
-non-USask remotes until someone deliberately approves them.
+Claude Code plugin for research projects at the Nutrien Digital Agriculture Centre (NDAC),
+University of Saskatchewan. It gives every team member the same project layout, research
+documents, data-governance checks and Claude helpers.
 
 ## Install (once per person)
 
@@ -26,32 +16,81 @@ authenticate to GitHub (for example via Git Credential Manager). Then, in Claude
 
 Get updates with `/plugin marketplace update ndac-foundation`.
 
-## Use
+Also needed on your machine: git; conda (Miniforge or Anaconda); Node.js LTS if you want
+to render the diagrams to PNG.
 
-Ask Claude: *"start a new project called wetland_mb"*, or *"make today's report folder"*.
+## What you can ask Claude
 
-New projects go to `~/Projects/<name>` by default. To use another folder, set the
-`PROJECTS_ROOT` environment variable or tell Claude where to put the project.
-`README.md` and the metadata template are filled in with your
-`git config user.name` / `user.email`.
+| Ask | What happens |
+|---|---|
+| "start a new project called wetland_mb" | Creates the project from the template (below) |
+| "add a sub-project called et_mapping" | `subprojects/et_mapping/` with configs, run script, notebooks; section in the experiments log |
+| "make a v2 of et_mapping that adds Sentinel-2" | New version config copied from the latest one + experiments-log row |
+| "make today's report folder for et_mapping" | `graph/<date>/et_mapping/`, `report/<date>/et_mapping/` |
+| "/export-check this figure / table / repo" | Disclosure check: identifiers, small cells, zone crossing, NDAC acknowledgement |
+| "/adopt-project on C:\...\old_project" | Brings an existing project up to the baseline, credential-safe |
+| "use the pii-scanner / reviewer / repo-auditor / metadata-tagger / researcher agent on ..." | Specialist checks (see below) |
 
-You can also run the script without Claude:
+## What's inside
+
+**Skills**
+
+| Skill | Purpose |
+|---|---|
+| `init-data-project` | New project, sub-project, version, dated folders (`scaffold.py`) |
+| `export-check` | Pre-export disclosure control; PASS / BLOCKED per artifact |
+| `adopt-project` | Bring an existing project under git and up to the baseline |
+| `ndac-data-rules` | Prairie data-governance and CRS rules, applied in any project |
+
+**Agents**: `pii-scanner` (identifiers, PPID/LLD, small cells, credentials),
+`metadata-tagger` (`.meta.yaml` sidecars), `repo-auditor` (baseline scorecard),
+`reviewer` (code, analysis, papers, slides), `researcher` (literature and policy research).
+
+**Project template** ([skills/init-data-project/template/](skills/init-data-project/template/)):
+
+```
+<project>/
+├── CLAUDE.md                 rules + research context Claude reads every session
+├── docs/research/            objectives.md (RQs, hypotheses, key metrics fixed in advance),
+│   └── diagrams/             plan.md, pipeline / Gantt / concept diagrams (Mermaid → PNG)
+├── docs/                     data_sources.md, experiments.md, DMP.md, references.bib,
+│                             contributions.md (CRediT), meetings/, ACKNOWLEDGEMENT.md
+├── subprojects/<name>/       one research question each; configs/<version>.yaml per variant
+├── src/common.py             layered config, run folders, run manifests, seeding
+├── scripts/                  compare_runs, render_diagrams, plot_study_area, verify_ee
+├── data/raw → interim → processed → outputs     (never committed)
+├── graph/<date>/, report/<date>/                (never committed)
+├── notebooks/                exploration only; outputs stripped on commit
+├── tests/                    layout, .gitignore, src/common.py, doc links
+├── environment.yml, requirements.txt, pyproject.toml
+├── .githooks/pre-push        NDAC push guard (blocks non-USask remotes until approved)
+└── .claude/settings.json     stops Claude from reading credential files
+```
+
+## Acknowledging NDAC
+
+Every project gets `docs/ACKNOWLEDGEMENT.md` with the standard wording for papers,
+theses, talks, posters, datasets and code, and `/export-check` blocks publications that
+miss it. **The wording is currently a draft**: replace it with NDAC's official text in
+[skills/init-data-project/template/docs/ACKNOWLEDGEMENT.md](skills/init-data-project/template/docs/ACKNOWLEDGEMENT.md).
+
+## Running the script without Claude
 
 ```
 python skills/init-data-project/scaffold.py new <name> [--base DIR]
-python skills/init-data-project/scaffold.py date <project_dir>
+python skills/init-data-project/scaffold.py subproject <project_dir> <name>
+python skills/init-data-project/scaffold.py version <project_dir> <subproject> <version> [--from V] [--description TEXT]
+python skills/init-data-project/scaffold.py date <project_dir> [--subproject NAME]
 ```
 
-## Changing the template
+New projects go to `~/Projects/<name>` unless `--base` or the `PROJECTS_ROOT` environment
+variable says otherwise. Author name and email come from `git config user.name` / `user.email`.
 
-Edit files under `skills/init-data-project/template/`, then commit and push. The change
-only affects projects created after it. Existing projects are not touched.
+## Changing the plugin
 
-## Not yet included
-
-The template refers to `/export-check`, `/adopt-project` and the metadata-tagger,
-pii-scanner, repo-auditor, reviewer and researcher agents. These still live in individual
-setups and are candidates to add here.
+Edit, test on a throwaway project (`scaffold.py new test --base <temp dir>`, then `pytest`
+inside it), commit, bump `version` in `.claude-plugin/plugin.json`, push. Changes reach
+teammates when they update the plugin, and affect only projects created afterwards.
 
 ## Contact
 

@@ -1,0 +1,16 @@
+%% Conceptual framework for <PROJECT_NAME>: drivers -> processes -> outcomes.
+%% Replace the example boxes. Edit, then: python scripts/render_diagrams.py concept
+flowchart TB
+  subgraph D["Drivers"]
+    D1["TODO e.g. irrigation water applied"]
+    D2["TODO e.g. weather, soil"]
+  end
+  subgraph P["Processes measured"]
+    P1["TODO e.g. evapotranspiration"]
+  end
+  subgraph O["Outcomes"]
+    O1["TODO e.g. yield, water-use efficiency"]
+  end
+  D1 --> P1
+  D2 --> P1
+  P1 -->|"H1"| O1

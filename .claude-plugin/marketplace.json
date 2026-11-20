@@ -8,7 +8,7 @@
     {
       "name": "ndac-foundation",
       "source": "./",
-      "description": "NDAC project template and the init-data-project skill.",
+      "description": "NDAC research project template, governance skills and agents.",
       "category": "foundation",
       "keywords": ["ndac", "project-template", "scaffold"]
     }

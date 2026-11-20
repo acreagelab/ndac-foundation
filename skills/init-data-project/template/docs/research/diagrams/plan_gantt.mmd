@@ -1,0 +1,18 @@
+%% Timeline for <PROJECT_NAME>. Keep in step with the milestone table in ../plan.md.
+%% Edit, then: python scripts/render_diagrams.py plan_gantt
+gantt
+  title <PROJECT_NAME> plan
+  dateFormat YYYY-MM-DD
+  axisFormat %b %Y
+
+  section Setup
+  Objectives and plan agreed        :done,   setup1, <DATE>, 14d
+  Data acquired and registered (M1) :active, m1, after setup1, 30d
+
+  section RQ1
+  Prepare inputs                    :rq1a, after m1, 30d
+  Model versions and comparison     :rq1b, after rq1a, 45d
+  Results reviewed (M3)             :milestone, m3, after rq1b, 0d
+
+  section Writing
+  Draft paper / chapter (M4)        :m4, after rq1b, 45d

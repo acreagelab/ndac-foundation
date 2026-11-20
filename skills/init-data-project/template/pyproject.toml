@@ -1,0 +1,4 @@
+# Project tooling config only (this is not a packaged library).
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]   # lets tests do `from src.common import ...`

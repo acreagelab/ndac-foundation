@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.ee_auth/**)",
+      "Read(**/.ee_accounts/**)",
+      "Read(**/.ee_personal_account/**)",
+      "Read(**/.gcloud_config/**)",
+      "Read(~/.config/earthengine/**)",
+      "Read(~/.config/gcloud/**)",
+      "Read(**/credentials)",
+      "Read(**/*credentials*.json)",
+      "Read(**/*service-account*.json)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)"
+    ]
+  }
+}

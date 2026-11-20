@@ -1,0 +1,9 @@
+# Version of <SUBPROJECT>. List ONLY what differs from configs/base.yaml.
+version:
+  name: v1_baseline
+  parent: base
+  hypothesis: TODO   # which hypothesis (H1, H2 ...) this version tests
+  description: "Baseline"
+  created: <DATE>
+
+params: {}

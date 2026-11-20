@@ -1,7 +1,7 @@
 {
   "name": "ndac-foundation",
-  "version": "0.1.0",
-  "description": "Shared foundation for Nutrien Digital Agriculture Centre (NDAC) projects at the University of Saskatchewan: a standard project template (data zones, reproducibility helpers, Earth Engine config, NDAC push guard) and the init-data-project skill that creates projects from it.",
+  "version": "0.2.0",
+  "description": "Shared foundation for Nutrien Digital Agriculture Centre (NDAC) research projects, University of Saskatchewan: project template with research objectives, plan and pipeline diagrams, sub-projects and versioned runs, data-source register, DMP and NDAC acknowledgement; export-check, adopt-project and data-rules skills; pii-scanner, metadata-tagger, repo-auditor, reviewer and researcher agents.",
   "author": {
     "name": "Nutrien Digital Agriculture Centre, University of Saskatchewan"
   },

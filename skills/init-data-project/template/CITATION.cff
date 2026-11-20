@@ -1,0 +1,18 @@
+# How to cite this project's code. Fill in before the repository or a release is shared.
+# Format: https://citation-file-format.github.io  (validate: pip install cffconvert; cffconvert --validate)
+cff-version: 1.2.0
+title: "<PROJECT_NAME>"
+message: >-
+  If you use this software, please cite it as below. This work used data and
+  facilities provided by the Nutrien Digital Agriculture Centre (NDAC),
+  University of Saskatchewan.
+type: software
+authors:
+  - family-names: "TODO"
+    given-names: "TODO"
+    affiliation: "Nutrien Digital Agriculture Centre (NDAC), University of Saskatchewan"
+# version: "1.0.0"
+# date-released: "YYYY-MM-DD"
+# doi: "10.xxxx/xxxx"            # once deposited (e.g. Zenodo, FRDR, Borealis)
+# license: "MIT"                 # decide at publication; add a matching LICENSE file
+# repository-code: "https://..."

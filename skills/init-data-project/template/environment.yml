@@ -1,0 +1,19 @@
+# Conda environment for <PROJECT_NAME>. This file is the source of truth for the env.
+#   conda env create -f environment.yml        (first time)
+#   conda env update -f environment.yml --prune (after edits)
+# Rename the env below, and record the name in CLAUDE.md.
+# Geospatial packages come from conda-forge (GDAL binaries); pure-Python pins live in
+# requirements.txt. Pin exact versions (=) once the env works:  conda env export --from-history
+name: <PROJECT_NAME>
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - geopandas=1.2.0
+  - matplotlib=3.11.2
+  # - rasterio
+  # - xarray
+  # - scikit-learn
+  - pip:
+      - -r requirements.txt
