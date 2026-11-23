@@ -22,6 +22,8 @@ Restart VS Code, open the Claude panel, type `/` and check that `init-data-proje
 `export-check` are listed.
 
 **Linux / HPC:** `git clone ... ~/ndac-foundation && sh ~/ndac-foundation/install.sh`
+On Fir, then run `sh ~/.claude/skills/fir-resources/fir_share.sh` so your `/project` folder
+is readable only by you and your PI, not the whole allocation group.
 
 **Update:** `git -C C:\<NSID>\Projects\ndac-foundation pull`, then run `install.ps1` again.
 
@@ -56,7 +58,7 @@ the repo is already laid out as a plugin. Skills then appear as `ndac-foundation
 | `export-check` | Pre-export disclosure control; PASS / BLOCKED per artifact |
 | `adopt-project` | Bring an existing project under git and up to the baseline |
 | `ndac-data-rules` | Prairie data-governance and CRS rules, applied in any project |
-| `fir-resources` | On Fir: right node (login / interactive / batch) and right storage (/project, /scratch, node-local disk, nearline) |
+| `fir-resources` | On Fir: right node (login / interactive / batch) and right storage (/project, /scratch, node-local disk, nearline); `fir_share.sh` keeps your `/project` folder private to you + your PI |
 
 **Agents**: `pii-scanner` (identifiers, PPID/LLD, small cells, credentials),
 `metadata-tagger` (`.meta.yaml` sidecars), `repo-auditor` (baseline scorecard),

@@ -1,3 +1,4 @@
 # The push guard is a POSIX shell script - keep LF endings on every OS
 skills/init-data-project/template/.githooks/pre-push text eol=lf
 install.sh text eol=lf
+*.sh text eol=lf

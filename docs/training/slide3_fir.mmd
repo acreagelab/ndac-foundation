@@ -18,7 +18,7 @@ flowchart TB
   end
   subgraph S2["2 · INSTALL ON FIR (once)"]
     direction TB
-    B1["In the Fir window: Extensions →<br/>Claude Code → <b>Install in SSH: fir.alliancecan.ca</b><br/>and sign in with your USask account"] --> B2["Terminal → New Terminal:<br/><i>cd ~</i><br/><i>git clone https://github.com/thuanhavan/ndac-foundation</i><br/><i>bash ndac-foundation/install.sh</i>"] --> B3["Tell Claude where projects go:<br/><i>echo 'export PROJECTS_ROOT=/project/def-&lt;PI&gt;/&lt;user&gt;'</i><br/><i>>> ~/.bashrc</i><br/>then reload the VS Code window"]
+    B1["In the Fir window: Extensions →<br/>Claude Code → <b>Install in SSH: fir.alliancecan.ca</b><br/>and sign in with your USask account"] --> B2["Terminal → New Terminal:<br/><i>cd ~</i><br/><i>git clone https://github.com/thuanhavan/ndac-foundation</i><br/><i>bash ndac-foundation/install.sh</i>"] --> B3["Tell Claude where projects go:<br/><i>echo 'export PROJECTS_ROOT=/project/def-&lt;PI&gt;/&lt;user&gt;'</i><br/><i>>> ~/.bashrc</i><br/>then reload the VS Code window"] --> B4["Keep your folder private<br/>(only you + your PI):<br/><i>sh ~/.claude/skills/fir-resources/fir_share.sh</i>"]
   end
   subgraph S3["3 · OPEN A PROJECT"]
     direction TB

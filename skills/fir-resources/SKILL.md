@@ -38,6 +38,26 @@ Many small files (thousands) are slow on shared storage: bundle them (tar) befor
 Before copying data to Fir at all: the project's security zone must be allowed there; ask
 the data steward for C_Limited / D_Restric.
 
+## Who can read your folder
+
+By default anything under `/project/<allocation>/` is readable by **every member** of the
+allocation group. Keep each member's `Projects` folder private to them + the PI:
+
+```bash
+sh ~/.claude/skills/fir-resources/fir_share.sh            # $PROJECTS_ROOT; PI read from def-<pi> in the path
+sh ~/.claude/skills/fir-resources/fir_share.sh --check    # report: who lacks access, what is still group-readable
+sh ~/.claude/skills/fir-resources/fir_share.sh --with <user>   # also a co-supervisor / collaborator
+```
+
+It removes group/other access, gives the PI (and `--with` users) read/write by ACL, sets
+default ACLs so new files inherit, and lets them pass through parent folders you own.
+- Suggest it when a user first sets up on Fir, and **show the command and get a yes**
+  before running it: it changes who can see the data. Don't use it to open access wider
+  than the data's agreement allows; `--with` users must be covered by the DSA/REB.
+- After `chmod g-...`/`chmod 700`, or copying in with `cp -p`, `rsync -a` or `tar`, access
+  can drop or reopen: run `--check`, and re-run the script if it reports items.
+- If the PI can't be read from the path (`/project/<gid>/...`), pass `--pi <user>`.
+
 ## Procedure for running a version
 
 1. **Commit** the code (run folders record the commit; `-dirty` runs can't be reproduced).

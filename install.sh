@@ -25,6 +25,7 @@ for d in "$repo"/skills/*/; do install_item "${d%/}" "$claude/skills"; done
 echo "Agents -> $claude/agents"
 for f in "$repo"/agents/*.md; do install_item "$f" "$claude/agents"; done
 chmod +x "$claude/skills/init-data-project/template/.githooks/pre-push" 2>/dev/null || true
+chmod +x "$claude/skills/fir-resources/fir_share.sh" 2>/dev/null || true
 
 echo ""
 echo "ndac-foundation installed."
