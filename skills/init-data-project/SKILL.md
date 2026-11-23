@@ -41,8 +41,12 @@ get the change when they update the plugin. Existing projects are not touched.
    the project's security zone is allowed there before copying data.
 5. Remind the user of the first steps, in this order, and offer to help with each:
    - CLAUDE.md TODOs: purpose, people (data steward), conda env, input security zone
-     (A_Public / B_Internal / C_Limited / D_Restric), identifiers present. Ask for the zone;
-     don't guess it.
+     (A_Public / B_Internal / C_Limited / D_Restric), identifiers present. The zone starts
+     as B_Internal (NDAC default for a new project); ask whether C_Limited / D_Restric data
+     is expected and, if so, raise it now, before that data arrives.
+   - On Fir: offer `sh ~/.claude/skills/fir-resources/fir_share.sh "<project_dir>"` so the
+     project gets its access (B_Internal: PI read/write, group read-only). Until it runs,
+     the new project is private to its owner and PI.
    - `docs/research/objectives.md`: aim, research questions, hypotheses, and the key metric
      for each, fixed before analysis. Then `plan.md` and the diagrams.
    - Then `SETUP.md`.

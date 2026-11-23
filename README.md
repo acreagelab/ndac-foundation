@@ -22,8 +22,9 @@ Restart VS Code, open the Claude panel, type `/` and check that `init-data-proje
 `export-check` are listed.
 
 **Linux / HPC:** `git clone ... ~/ndac-foundation && sh ~/ndac-foundation/install.sh`
-On Fir, then run `sh ~/.claude/skills/fir-resources/fir_share.sh` so your `/project` folder
-is readable only by you and your PI, not the whole allocation group.
+On Fir, then run `sh ~/.claude/skills/fir-resources/fir_share.sh`: you, your PI and the
+data manager (`skills/fir-resources/fir_share.conf`) get read/write, the rest of the group read-only on B_Internal projects and nothing on
+C_Limited / D_Restric ones (from each project's security zone).
 
 **Update:** `git -C C:\<NSID>\Projects\ndac-foundation pull`, then run `install.ps1` again.
 
@@ -58,7 +59,7 @@ the repo is already laid out as a plugin. Skills then appear as `ndac-foundation
 | `export-check` | Pre-export disclosure control; PASS / BLOCKED per artifact |
 | `adopt-project` | Bring an existing project under git and up to the baseline |
 | `ndac-data-rules` | Prairie data-governance and CRS rules, applied in any project |
-| `fir-resources` | On Fir: right node (login / interactive / batch) and right storage (/project, /scratch, node-local disk, nearline); `fir_share.sh` keeps your `/project` folder private to you + your PI |
+| `fir-resources` | On Fir: right node (login / interactive / batch) and right storage (/project, /scratch, node-local disk, nearline); `fir_share.sh` sets access from each project's security zone (PI read/write, group read-only or none) |
 
 **Agents**: `pii-scanner` (identifiers, PPID/LLD, small cells, credentials),
 `metadata-tagger` (`.meta.yaml` sidecars), `repo-auditor` (baseline scorecard),

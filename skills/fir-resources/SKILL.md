@@ -41,22 +41,38 @@ the data steward for C_Limited / D_Restric.
 ## Who can read your folder
 
 By default anything under `/project/<allocation>/` is readable by **every member** of the
-allocation group. Keep each member's `Projects` folder private to them + the PI:
+allocation group. `fir_share.sh` makes access follow each project's security zone (the
+`Security zone of inputs:` line in its CLAUDE.md):
+
+| | owner, PI, data managers (+ `--with`) | allocation group |
+|---|---|---|
+| `A_Public`, `B_Internal` project (new-project default) | read/write | read-only: read code and data; can't edit, delete, rename or add files |
+| `C_Limited`, `D_Restric`, or zone still `TODO` | read/write | nothing |
+| folders that aren't projects | read/write | nothing |
+| the member's `Projects` folder itself | read/write | list project names only |
 
 ```bash
-sh ~/.claude/skills/fir-resources/fir_share.sh            # $PROJECTS_ROOT; PI read from def-<pi> in the path
-sh ~/.claude/skills/fir-resources/fir_share.sh --check    # report: who lacks access, what is still group-readable
-sh ~/.claude/skills/fir-resources/fir_share.sh --with <user>   # also a co-supervisor / collaborator
+sh ~/.claude/skills/fir-resources/fir_share.sh                  # all projects under $PROJECTS_ROOT
+sh ~/.claude/skills/fir-resources/fir_share.sh <project_dir>    # one project
+sh ~/.claude/skills/fir-resources/fir_share.sh --check [dir]    # report only, per project
+sh ~/.claude/skills/fir-resources/fir_share.sh --with <user> <project_dir>   # DSA-named person
 ```
 
-It removes group/other access, gives the PI (and `--with` users) read/write by ACL, sets
-default ACLs so new files inherit, and lets them pass through parent folders you own.
-- Suggest it when a user first sets up on Fir, and **show the command and get a yes**
-  before running it: it changes who can see the data. Don't use it to open access wider
-  than the data's agreement allows; `--with` users must be covered by the DSA/REB.
-- After `chmod g-...`/`chmod 700`, or copying in with `cp -p`, `rsync -a` or `tar`, access
-  can drop or reopen: run `--check`, and re-run the script if it reports items.
-- If the PI can't be read from the path (`/project/<gid>/...`), pass `--pi <user>`.
+Allocation group and PI come from `/project/def-<pi>/...` in the path (`--group`, `--pi`
+otherwise). Data managers per allocation are listed in `fir_share.conf` (next to the
+script; edit it in the ndac-foundation repo). New items under the root start private
+(owner, PI, data managers) until the script runs. Each member runs it once on their own
+`Projects` folder: only a folder's owner can set its access.
+- **Show the command and get a yes** before running it: it changes who can see data.
+- Run it after creating a project (B_Internal opens it to the group read-only).
+- **Zone change**: when a C_Limited / D_Restric source is registered in
+  `docs/data_sources.md`, or the user says such data is coming, raise the project's zone in
+  CLAUDE.md and re-run on that project **before the data is copied in**.
+- `--with` users must be covered by the DSA / REB approval; never use it to widen access
+  beyond the data's agreement.
+- After `chmod`, or copying in with `cp -p`, `rsync -a` or `tar`, access can drift: run
+  `--check` and re-run if it reports items. Files read-only for the owner too (git's
+  `.git/objects`) are fine at `r--` and not reported.
 
 ## Procedure for running a version
 

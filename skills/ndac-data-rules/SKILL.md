@@ -20,6 +20,7 @@ Never export, publish, or paste into chats, issues or notebook outputs:
 ## Security zones
 - Order: D_Restric > C_Limited > B_Internal > A_Public
 - Writing output to a LOWER zone than its input is declassification: it needs a documented justification in the dataset's `.meta.yaml` sidecar and sign-off from the project's data steward (NDAC data manager by default) first
+- New projects start as B_Internal. Before C_Limited / D_Restric data enters a project, raise the zone in its CLAUDE.md; on Fir then re-run `fir_share.sh` on the project, because B_Internal projects are readable by the whole allocation group
 
 ## Credentials
 - Never read, print, or copy contents of: `.ee_auth/**`, `.ee_accounts/**`, `.ee_personal_account/**`, `**/credentials`, `application_default_credentials.json`, `*service-account*.json`, `*.pem`, `.env` values; report paths only

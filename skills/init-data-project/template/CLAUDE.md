@@ -40,8 +40,10 @@ TODO: only commands verified to work, in order. Keep [docs/HOW_TO_RUN.md](docs/H
 - Shared-drive root comes from `DATA_ROOT` in `.env`; in configs write `${DATA_ROOT}/...`.
   No hardcoded drive letters or `C:\Users\...` paths in code or configs
 - Every input is registered in [docs/data_sources.md](docs/data_sources.md) when it arrives
-- Security zone of inputs: TODO (`A_Public` / `B_Internal` / `C_Limited` / `D_Restric`;
-  order D > C > B > A). Writing output to a LOWER zone than its input is declassification:
+- Security zone of inputs: B_Internal (new-project default; `A_Public` / `B_Internal` /
+  `C_Limited` / `D_Restric`, order D > C > B > A). Raise it BEFORE C/D data arrives; on Fir,
+  B_Internal projects are readable by the allocation group, so re-run `fir_share.sh` after
+  changing it. Writing output to a LOWER zone than its input is declassification:
   it needs a justification in the dataset's `.meta.yaml` and the data steward's sign-off first.
 - Every shared dataset gets a `.meta.yaml` sidecar (metadata-tagger agent;
   template [docs/metadata-template.meta.yaml](docs/metadata-template.meta.yaml))
