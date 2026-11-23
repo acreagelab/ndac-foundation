@@ -128,11 +128,13 @@ anything it replaces is backed up to `~/.claude/backups/` first.
 
 Access follows the `Security zone of inputs:` line in each project's `CLAUDE.md`:
 `A_Public` / `B_Internal` (new-project default) → allocation group read-only;
-`C_Limited` / `D_Restric` / `TODO` → owner, PI and data managers only. PI and allocation
-come from the `/project/def-<pi>/` path; data managers are listed in
-[skills/fir-resources/fir_share.conf](skills/fir-resources/fir_share.conf). Re-run after
-creating a project, changing its zone, or copying data in with `cp -p` / `rsync -a` /
-`tar`; `--check` reports anything out of place. Only a folder's owner can set its access.
+`C_Limited` / `D_Restric` / `TODO` → owner, PI and data managers only. Folders that group
+projects (e.g. `Projects/Research/`) are listable by the group; the projects inside follow
+their own zone. PI and allocation come from the `/project/def-<pi>/` path; data managers
+are listed in [skills/fir-resources/fir_share.conf](skills/fir-resources/fir_share.conf).
+New projects made with `init-data-project` get their access automatically. Re-run after
+changing a zone, or copying data in with `cp -p` / `rsync -a` / `tar`; `--check` reports
+anything out of place. Only a folder's owner can set its access.
 
 ### Project template
 

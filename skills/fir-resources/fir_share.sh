@@ -16,8 +16,10 @@
 #                               B_Internal; nothing on C_Limited / D_Restric / unset (TODO)
 #                               projects, or on folders that aren't projects
 #   everyone else               nothing
-# The group can list the projects root (project names only) but not change it. New items
-# there start private until this script runs (fail closed). Re-run after creating a project, after
+# The group can list the projects root (project names only) but not change it, and the same
+# for organizing folders that hold projects (e.g. Projects/Research/<project>): those are
+# listed and their projects handled by zone. New items in the root start private until this
+# script runs (fail closed); scaffold.py runs it on each new project. Re-run after creating a project, after
 # changing its zone, and after copying data in with cp -p / rsync -a / tar.
 # The allocation and PI come from the path: /project/def-<pi>/... (also rrg-/rpp-).
 set -e
@@ -84,6 +86,10 @@ zone_of() {  # zone from the project's CLAUDE.md; "-" if not a project, TODO if 
 group_perm() {  # what the allocation group gets for a zone
     case "$1" in A_Public|B_Internal) echo "r-X" ;; *) echo "---" ;; esac
 }
+is_folder_of_projects() {  # not a project itself, but holds projects (up to 3 levels down)
+    [ -d "$1" ] && [ ! -L "$1" ] && [ ! -f "$1/CLAUDE.md" ] || return 1
+    [ -n "$(find "$1" -mindepth 2 -maxdepth 4 -name CLAUDE.md -print -quit 2>/dev/null)" ]
+}
 
 uacl=""; dacl="d:u::rwX,d:g::---,d:o::---"
 for u in $users; do uacl="$uacl,u:$u:rwX"; dacl="$dacl,d:u:$u:rwX"; done
@@ -137,6 +143,20 @@ check_item() {  # $1 path
     fi
 }
 
+check_children() {  # $1 = projects root or folder of projects
+    for c in "$1"/* "$1"/.[!.]*; do
+        [ -e "$c" ] || continue
+        if is_folder_of_projects "$c"; then
+            echo "  $(basename "$c")/  [folder of projects: group may list, not change]"
+            report "editable by group/others" "$(open_to "$c" "" '^.w' '^(group|other):[^:]*:')"
+            report "$alloc can't list" "$(open_to "$c" "" '^-' "^group:$alloc:")"
+            check_children "$c"
+        else
+            check_item "$c"
+        fi
+    done
+}
+
 if [ "$check" = 1 ]; then
     problems=0
     echo "Access under $real (allocation $alloc, PI $pi):"
@@ -144,7 +164,7 @@ if [ "$check" = 1 ]; then
         echo "  (projects root: group may list names, not change)"
         report "root editable by group/others" "$(open_to "$real" "" '^.w' '^(group|other):[^:]*:')"
         report "root readable by others" "$(open_to "$real" "" '^r' '^other::')"
-        for c in "$real"/* "$real"/.[!.]*; do [ -e "$c" ] && check_item "$c"; done
+        check_children "$real"
     else
         check_item "$real"
     fi
@@ -152,19 +172,31 @@ if [ "$check" = 1 ]; then
     exit 0
 fi
 
+apply_children() {  # $1 = projects root or folder of projects, $2 = indent for messages
+    for c in "$1"/* "$1"/.[!.]*; do
+        [ -e "$c" ] || continue
+        if is_folder_of_projects "$c"; then
+            chmod go-rwx "$c" 2>/dev/null || skipped=1
+            setfacl -m "$uacl,g:$alloc:r-x" "$c" 2>/dev/null || skipped=1
+            setfacl -m "$dacl,d:g:$alloc:---" "$c" 2>/dev/null || skipped=1
+            echo "$2$(basename "$c")/: folder of projects -> $alloc may list"
+            apply_children "$c" "$2  "
+            continue
+        fi
+        z=$(zone_of "$c"); g=$(group_perm "$z")
+        apply_tree "$c" "$g"
+        [ "$g" = "r-X" ] && { opened=1; echo "$2$(basename "$c"): zone $z -> $alloc read-only"; } \
+                         || echo "$2$(basename "$c"): zone $z -> private"
+    done
+}
+
 opened=0
 if [ "$mode" = root ]; then
     echo "Projects root $real: you + $(echo $users | tr ' ' '+') read/write; $alloc may list it"
     chmod go-rwx "$real"
     setfacl -m "$uacl,g:$alloc:r-x" "$real"
     setfacl -m "$dacl,d:g:$alloc:---" "$real"   # new items private until this script runs
-    for c in "$real"/* "$real"/.[!.]*; do
-        [ -e "$c" ] || continue
-        z=$(zone_of "$c"); g=$(group_perm "$z")
-        apply_tree "$c" "$g"
-        [ "$g" = "r-X" ] && { opened=1; echo "  $(basename "$c"): zone $z -> $alloc read-only"; } \
-                         || echo "  $(basename "$c"): zone $z -> private"
-    done
+    apply_children "$real" "  "
 else
     z=$(zone_of "$real"); g=$(group_perm "$z")
     apply_tree "$real" "$g"

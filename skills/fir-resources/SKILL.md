@@ -49,6 +49,7 @@ allocation group. `fir_share.sh` makes access follow each project's security zon
 | `A_Public`, `B_Internal` project (new-project default) | read/write | read-only: read code and data; can't edit, delete, rename or add files |
 | `C_Limited`, `D_Restric`, or zone still `TODO` | read/write | nothing |
 | folders that aren't projects | read/write | nothing |
+| folders that hold projects (e.g. `Projects/Research/`) | read/write | list names only; projects inside follow their own zone |
 | the member's `Projects` folder itself | read/write | list project names only |
 
 ```bash
@@ -64,7 +65,8 @@ script; edit it in the ndac-foundation repo). New items under the root start pri
 (owner, PI, data managers) until the script runs. Each member runs it once on their own
 `Projects` folder: only a folder's owner can set its access.
 - **Show the command and get a yes** before running it: it changes who can see data.
-- Run it after creating a project (B_Internal opens it to the group read-only).
+- New projects: `scaffold.py new` runs it automatically on Fir (B_Internal opens the project
+  to the group read-only). If it printed "Access not set", offer the command.
 - **Zone change**: when a C_Limited / D_Restric source is registered in
   `docs/data_sources.md`, or the user says such data is coming, raise the project's zone in
   CLAUDE.md and re-run on that project **before the data is copied in**.

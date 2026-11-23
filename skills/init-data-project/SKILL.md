@@ -29,6 +29,10 @@ get the change when they update the plugin. Existing projects are not touched.
    where. On Fir it must be `/project/<allocation>/<user>/Projects`; if `PROJECTS_ROOT` is
    the user's top folder (no `/Projects`), stop and help fix `~/.bashrc` first (the script
    refuses that path too). Run `python "<skill-dir>/scaffold.py" new <name>` (add `--base <dir>` if needed).
+   - On Fir it then runs `fir_share.sh` on the new project: B_Internal, so the allocation
+     group can read it (not change it); PI and data managers get read/write. Tell the user
+     this before running. If C_Limited / D_Restric data is expected from the start, add
+     `--no-share`, raise the zone in CLAUDE.md, then run `fir_share.sh` on the project.
    - The script refuses if the folder exists. Never delete or overwrite a project to get
      around this.
    - `<AUTHOR>`/`<EMAIL>` come from `git config user.name`/`user.email`. If it reports
@@ -46,9 +50,9 @@ get the change when they update the plugin. Existing projects are not touched.
      (A_Public / B_Internal / C_Limited / D_Restric), identifiers present. The zone starts
      as B_Internal (NDAC default for a new project); ask whether C_Limited / D_Restric data
      is expected and, if so, raise it now, before that data arrives.
-   - On Fir: offer `sh ~/.claude/skills/fir-resources/fir_share.sh "<project_dir>"` so the
-     project gets its access (B_Internal: PI read/write, group read-only). Until it runs,
-     the new project is private to its owner and PI.
+   - On Fir: access was set by the script (B_Internal: PI read/write, group read-only). If
+     it printed "Access not set", offer `sh ~/.claude/skills/fir-resources/fir_share.sh
+     "<project_dir>"`; until it runs, the project is private to its owner and PI.
    - `docs/research/objectives.md`: aim, research questions, hypotheses, and the key metric
      for each, fixed before analysis. Then `plan.md` and the diagrams.
    - Then `SETUP.md`.
