@@ -188,10 +188,18 @@ echo 'export PROJECTS_ROOT=/project/def-kanj241/'$USER'/Projects' >> ~/.bashrc
 source ~/.bashrc && mkdir -p $PROJECTS_ROOT
 sh ~/.claude/skills/fir-resources/fir_share.sh
 sh ~/.claude/skills/fir-resources/fir_share.sh --check
+echo $PROJECTS_ROOT
 """))]
 s += [step("3", "Check",
-           check("The last line says <b>All as intended.</b> Then <b>Ctrl+Shift+P</b> &rarr; "
-                 "<b>Developer: Reload Window</b>, and type <b>/</b> in Claude."))]
+           check("<b>--check</b> says <b>All as intended.</b> and the last line ends in "
+                 "<b>/Projects</b> (e.g. <font name='Mono'>/project/def-kanj241/abc123/Projects</font>). "
+                 "Then <b>Ctrl+Shift+P</b> &rarr; <b>Developer: Reload Window</b>."))]
+s += [step("4", "Start your first project",
+           *bullets("<b>File &rarr; Open Folder</b> &rarr; "
+                    "<font name='Mono'>/project/def-kanj241/&lt;your NSID&gt;/<b>Projects</b></font>",
+                    "Ask Claude: <i>\"Start a new project called wetland_mb\"</i>. It goes in "
+                    "<font name='Mono'>.../Projects/wetland_mb</font>, never directly in your "
+                    "NSID folder."))]
 
 s += [P("Who can see your projects on Fir", h1)]
 s += [grid([
@@ -203,14 +211,6 @@ s += [grid([
 s += [Spacer(1, 6), tip("Restricted data (field-level yield, soil, producer or land data)? "
                         "<b>Before</b> copying it in, tell Claude <i>\"this project will have "
                         "restricted data\"</i>. Only you, the PI and the data manager will see it.")]
-
-s += [P("Using it", h1)]
-s += [grid([
-    ["Ask Claude", "You get"],
-    ["<i>Start a new project called wetland_mb</i>", "A ready project folder"],
-    ["<i>/export-check this figure</i>", "A safety check before sharing anything"],
-    ["On Fir: <i>Run my analysis on the cluster</i>", "Claude plans and submits the job"],
-], [3.0 * inch, W - 3.0 * inch])]
 
 s += [P("Updating", h1)]
 s += [P("<b>PC:</b>", cell), code(r"""
@@ -226,6 +226,9 @@ s += [grid([
     ["<i>already exists</i>", "Already done; carry on (or use Updating)"],
     ["<b>/</b> doesn't show init-data-project", "Reload VS Code"],
     ["Fir keeps asking for Duo or hangs", "Check <b>useLocalServer</b> is off, reconnect"],
+    ["Project made outside <b>Projects/</b>, or Claude says <i>is your top folder</i>",
+     "Run <font name='Mono'>echo $PROJECTS_ROOT</font>; it must end in <b>/Projects</b>. "
+     "If not, ask Thuan for the fix"],
 ], [3.0 * inch, W - 3.0 * inch])]
 s += [Spacer(1, 8), box("Help:", "contact <b>Thuan Ha</b> (NDAC data manager) with a "
                         "screenshot of the error.", LIGHT_GREEN, GREEN)]
