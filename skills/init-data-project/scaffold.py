@@ -164,12 +164,24 @@ def experiments_add(root: Path, subproject: str, row: str = "") -> None:
 
 
 # ------------------------------------------------------------------------ commands
+def is_hpc_user_dir(base: Path) -> bool:
+    """True for /project/<allocation>/<user> itself: on Alliance clusters projects belong in
+    its Projects/ subfolder (PROJECTS_ROOT), never loose in the user's top folder."""
+    p = base.as_posix().rstrip("/").split("/")
+    return len(p) == 4 and p[:2] == ["", "project"] and p[3] == os.environ.get("USER", "")
+
+
 def cmd_new(a) -> None:
     check_name(a.name, "project")
     template = Path(a.template)
     if not (template / "CLAUDE.md").exists():
         sys.exit(f"ERROR: template not found or has no CLAUDE.md: {template}")
     base = Path(a.base).expanduser()
+    if is_hpc_user_dir(base):
+        sys.exit(f"ERROR: {base} is your top folder on /project; projects go in "
+                 f"{base}/Projects. Fix PROJECTS_ROOT in ~/.bashrc:\n"
+                 f"  export PROJECTS_ROOT={base}/Projects\n"
+                 f"then: source ~/.bashrc && mkdir -p $PROJECTS_ROOT")
     if not base.is_dir():
         sys.exit(f"ERROR: parent folder does not exist: {base} "
                  f"(create it, or pass --base / set PROJECTS_ROOT).")

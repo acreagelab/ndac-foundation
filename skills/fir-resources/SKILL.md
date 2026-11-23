@@ -27,7 +27,7 @@ Never start heavy computation on a login node: it slows the node for everyone an
 
 | Data | Storage | Notes |
 |---|---|---|
-| Code, configs, docs (the project) | `/project/<allocation>/<user>/<project>` | backed up, group-shared |
+| Code, configs, docs (the project) | `/project/<allocation>/<user>/Projects/<project>` (`$PROJECTS_ROOT`) | backed up |
 | Raw inputs, final results | `/project/...` | backed up, permanent; register inputs in docs/data_sources.md |
 | Big intermediate files, large run outputs | `/scratch/$USER/<project>` | fast, large, **NOT backed up, purged when old**; never the only copy |
 | Data a job reads heavily | node-local `$SLURM_TMPDIR` | fastest; deleted at job end; use `STAGE=1` so results are copied back |

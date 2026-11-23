@@ -26,7 +26,9 @@ get the change when they update the plugin. Existing projects are not touched.
    If not given, ask.
 2. Resolve `<projects-root>`: `--base DIR`, else the `PROJECTS_ROOT` environment
    variable, else `~/Projects`. Show it and confirm with the user if they haven't said
-   where. Run `python "<skill-dir>/scaffold.py" new <name>` (add `--base <dir>` if needed).
+   where. On Fir it must be `/project/<allocation>/<user>/Projects`; if `PROJECTS_ROOT` is
+   the user's top folder (no `/Projects`), stop and help fix `~/.bashrc` first (the script
+   refuses that path too). Run `python "<skill-dir>/scaffold.py" new <name>` (add `--base <dir>` if needed).
    - The script refuses if the folder exists. Never delete or overwrite a project to get
      around this.
    - `<AUTHOR>`/`<EMAIL>` come from `git config user.name`/`user.email`. If it reports
