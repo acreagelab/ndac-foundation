@@ -13,7 +13,7 @@ USask account), and **Python**. No GitHub account is needed to install.
 
 ```powershell
 mkdir C:\<NSID>\Projects
-git clone https://github.com/thuanhavan/ndac-foundation C:\<NSID>\Projects\ndac-foundation
+git clone https://github.com/acreagelab/ndac-foundation C:\<NSID>\Projects\ndac-foundation
 powershell -ExecutionPolicy Bypass -File C:\<NSID>\Projects\ndac-foundation\install.ps1
 setx PROJECTS_ROOT C:\<NSID>\Projects
 ```

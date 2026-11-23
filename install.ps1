@@ -1,6 +1,6 @@
 # Install (or update) ndac-foundation as personal Claude Code skills and agents.
 #
-#   git clone https://github.com/thuanhavan/ndac-foundation C:\<NSID>\Projects\ndac-foundation
+#   git clone https://github.com/acreagelab/ndac-foundation C:\<NSID>\Projects\ndac-foundation
 #   powershell -ExecutionPolicy Bypass -File C:\<NSID>\Projects\ndac-foundation\install.ps1
 #
 # Update later:  git -C <repo> pull ; then run this script again.
