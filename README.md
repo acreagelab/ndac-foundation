@@ -1,64 +1,111 @@
 # ndac-foundation
 
-Claude Code plugin for research projects at the Nutrien Digital Agriculture Centre (NDAC),
-University of Saskatchewan. It gives every team member the same project layout, research
-documents, data-governance checks and Claude helpers.
+Ready-made project setup and Claude helpers for research at the Nutrien Digital
+Agriculture Centre (NDAC), University of Saskatchewan. Install it once, then ask Claude
+to start a project: you get the same folders, documents and data-safety checks as
+everyone else on the team.
 
-## Install (once per person)
+**You need:** VS Code with the **Claude Code** extension (signed in with your USask
+account), **git** and **Python**. You don't need a GitHub account.
 
-You need: **git**, **VS Code** with the **Claude Code** extension (signed in with your
-USask account), and **Python**. No GitHub account is needed to install.
+---
 
-**Windows** (in a VS Code terminal; replace `<NSID>` with yours):
+## Install on your Windows PC
+
+Open VS Code → **Terminal → New Terminal**, then copy and paste these lines.
+Nothing needs editing.
 
 ```powershell
-mkdir C:\<NSID>\Projects
-git clone https://github.com/acreagelab/ndac-foundation C:\<NSID>\Projects\ndac-foundation
-powershell -ExecutionPolicy Bypass -File C:\<NSID>\Projects\ndac-foundation\install.ps1
-setx PROJECTS_ROOT C:\<NSID>\Projects
+mkdir C:\$env:USERNAME\Projects
+git clone https://github.com/acreagelab/ndac-foundation C:\$env:USERNAME\Projects\ndac-foundation
+powershell -ExecutionPolicy Bypass -File C:\$env:USERNAME\Projects\ndac-foundation\install.ps1
+setx PROJECTS_ROOT C:\$env:USERNAME\Projects
 ```
 
-Restart VS Code, open the Claude panel, type `/` and check that `init-data-project` and
-`export-check` are listed.
+**Check it worked:** close and reopen VS Code, click the **Claude** icon, type `/`.
+You should see `init-data-project` and `export-check` in the list.
 
-**Linux / HPC:**
+---
+
+## Install on Fir (the Alliance cluster)
+
+First connect VS Code to Fir (see [slide 3](docs/training/slide3_fir.png)). Then open
+**Terminal → New Terminal** in the Fir window and paste:
 
 ```bash
 cd ~
 git clone https://github.com/acreagelab/ndac-foundation
 bash ndac-foundation/install.sh
+
+echo 'export PROJECTS_ROOT=/project/def-kanj241/'$USER'/Projects' >> ~/.bashrc
+source ~/.bashrc
+mkdir -p $PROJECTS_ROOT
+
+sh ~/.claude/skills/fir-resources/fir_share.sh
+sh ~/.claude/skills/fir-resources/fir_share.sh --check
 ```
 
-On Fir, then run `sh ~/.claude/skills/fir-resources/fir_share.sh`: you, your PI and the
-data manager (`skills/fir-resources/fir_share.conf`) get read/write, the rest of the group read-only on B_Internal projects and nothing on
-C_Limited / D_Restric ones (from each project's security zone).
+**Check it worked:** the last line should say **All as intended.** Then reload VS Code
+(Ctrl+Shift+P → *Developer: Reload Window*) and type `/` in the Claude panel.
 
-**Update:** `git -C C:\<NSID>\Projects\ndac-foundation pull`, then run `install.ps1` again.
+Not in the `def-kanj241` group? Replace `def-kanj241` with your group's name.
 
-The installer copies the skills into `~/.claude/skills/` and the agents into
-`~/.claude/agents/`. Anything it replaces is backed up first to `~/.claude/backups/`.
+### Who can see your projects on Fir
 
-Why not `/plugin install`? USask's Claude Code policy only allows plugin marketplaces on
-`gitlab.usask.ca`. If NDAC gets a group there, the plugin can move and install with
-`/plugin marketplace add <gitlab url>` + `/plugin install ndac-foundation@ndac-foundation`;
-the repo is already laid out as a plugin. Skills then appear as `ndac-foundation:<skill>`.
-
-## What you can ask Claude
-
-| Ask | What happens |
+| Who | What they can do |
 |---|---|
-| "start a new project called wetland_mb" | Creates the project from the template (below) |
-| "add a sub-project called et_mapping" | `subprojects/et_mapping/` with configs, run script, notebooks; section in the experiments log |
-| "make a v2 of et_mapping that adds Sentinel-2" | New version config copied from the latest one + experiments-log row |
-| "make today's report folder for et_mapping" | `graph/<date>/et_mapping/`, `report/<date>/et_mapping/` |
-| "/export-check this figure / table / repo" | Disclosure check: identifiers, small cells, zone crossing, NDAC acknowledgement |
-| "/adopt-project on C:\...\old_project" | Brings an existing project up to the baseline, credential-safe |
-| "use the pii-scanner / reviewer / repo-auditor / metadata-tagger / researcher agent on ..." | Specialist checks (see below) |
-| On Fir: "run v2 of et_mapping on the cluster" | Plans node, time, memory, CPUs/GPUs and storage from real measurements (`fir_plan.py`), shows the plan, submits the Slurm job after you agree |
+| You | Everything |
+| Your PI and the data manager | Read and edit everything |
+| Other team members | **Read only** (can't edit or delete), on normal projects |
+| Anyone else | Nothing |
 
-## What's inside
+Projects that hold restricted data (field-level yield, soil, producer data, etc.) are
+hidden from other team members. Tell Claude *"this project will have restricted data"*
+before you copy such data in, and it will lock the project down.
 
-**Skills**
+---
+
+## Start using it
+
+Open the Claude panel and just ask:
+
+| Ask Claude | What you get |
+|---|---|
+| *Start a new project called wetland_mb* | A project folder with everything set up |
+| *Add a sub-project called et_mapping* | A folder for one research question |
+| *Make a v2 of et_mapping that adds Sentinel-2* | A new version of the method to compare |
+| *Make today's report folder* | Dated folders for figures and reports |
+| */export-check this figure* | A check before anything leaves the team (no personal or farm data, NDAC acknowledged) |
+| On Fir: *Run v2 of et_mapping on the cluster* | Claude picks time, memory and storage, shows you, then submits the job |
+
+## Get updates
+
+Windows:
+
+```powershell
+git -C C:\$env:USERNAME\Projects\ndac-foundation pull
+powershell -ExecutionPolicy Bypass -File C:\$env:USERNAME\Projects\ndac-foundation\install.ps1
+```
+
+Fir:
+
+```bash
+git -C ~/ndac-foundation pull && bash ~/ndac-foundation/install.sh
+```
+
+## Help
+
+Training slides: [docs/training/](docs/training/). Questions or errors: contact Thuan Ha
+(NDAC data manager) and paste the error message.
+
+---
+
+## Reference
+
+<details>
+<summary>What's inside, how access works, and maintaining the plugin</summary>
+
+### Skills and agents
 
 | Skill | Purpose |
 |---|---|
@@ -66,13 +113,30 @@ the repo is already laid out as a plugin. Skills then appear as `ndac-foundation
 | `export-check` | Pre-export disclosure control; PASS / BLOCKED per artifact |
 | `adopt-project` | Bring an existing project under git and up to the baseline |
 | `ndac-data-rules` | Prairie data-governance and CRS rules, applied in any project |
-| `fir-resources` | On Fir: right node (login / interactive / batch) and right storage (/project, /scratch, node-local disk, nearline); `fir_share.sh` sets access from each project's security zone (PI read/write, group read-only or none) |
+| `fir-resources` | On Fir: right node (login / interactive / batch) and storage (/project, /scratch, node-local disk, nearline); `fir_share.sh` sets access |
 
 **Agents**: `pii-scanner` (identifiers, PPID/LLD, small cells, credentials),
 `metadata-tagger` (`.meta.yaml` sidecars), `repo-auditor` (baseline scorecard),
 `reviewer` (code, analysis, papers, slides), `researcher` (literature and policy research).
+Ask e.g. *"use the reviewer agent on this chapter"*. `/adopt-project` brings an existing
+project up to the baseline.
 
-**Project template** ([skills/init-data-project/template/](skills/init-data-project/template/)):
+The installer copies skills to `~/.claude/skills/` and agents to `~/.claude/agents/`;
+anything it replaces is backed up to `~/.claude/backups/` first.
+
+### Access on Fir (`fir_share.sh`)
+
+Access follows the `Security zone of inputs:` line in each project's `CLAUDE.md`:
+`A_Public` / `B_Internal` (new-project default) → allocation group read-only;
+`C_Limited` / `D_Restric` / `TODO` → owner, PI and data managers only. PI and allocation
+come from the `/project/def-<pi>/` path; data managers are listed in
+[skills/fir-resources/fir_share.conf](skills/fir-resources/fir_share.conf). Re-run after
+creating a project, changing its zone, or copying data in with `cp -p` / `rsync -a` /
+`tar`; `--check` reports anything out of place. Only a folder's owner can set its access.
+
+### Project template
+
+[skills/init-data-project/template/](skills/init-data-project/template/):
 
 ```
 <project>/
@@ -93,14 +157,14 @@ the repo is already laid out as a plugin. Skills then appear as `ndac-foundation
 └── .claude/settings.json     stops Claude from reading credential files
 ```
 
-## Acknowledging NDAC
+### Acknowledging NDAC
 
 Every project gets `docs/ACKNOWLEDGEMENT.md` with the standard wording for papers,
 theses, talks, posters, datasets and code, and `/export-check` blocks publications that
 miss it. **The wording is currently a draft**: replace it with NDAC's official text in
 [skills/init-data-project/template/docs/ACKNOWLEDGEMENT.md](skills/init-data-project/template/docs/ACKNOWLEDGEMENT.md).
 
-## Running the script without Claude
+### Running the scaffold without Claude
 
 ```
 python skills/init-data-project/scaffold.py new <name> [--base DIR]
@@ -109,14 +173,23 @@ python skills/init-data-project/scaffold.py version <project_dir> <subproject> <
 python skills/init-data-project/scaffold.py date <project_dir> [--subproject NAME]
 ```
 
-New projects go to `~/Projects/<name>` unless `--base` or the `PROJECTS_ROOT` environment
-variable says otherwise. Author name and email come from `git config user.name` / `user.email`.
+New projects go to `~/Projects/<name>` unless `--base` or `PROJECTS_ROOT` says otherwise.
+Author name and email come from `git config user.name` / `user.email`.
 
-## Changing the plugin
+### Why not `/plugin install`?
+
+USask's Claude Code policy only allows plugin marketplaces on `gitlab.usask.ca`. If NDAC
+gets a group there: `/plugin marketplace add <gitlab url>` +
+`/plugin install ndac-foundation@ndac-foundation` (the repo is already laid out as a
+plugin; skills then appear as `ndac-foundation:<skill>`).
+
+### Changing the plugin
 
 Edit, test on a throwaway project (`scaffold.py new test --base <temp dir>`, then `pytest`
 inside it), commit, bump `version` in `.claude-plugin/plugin.json`, push. Changes reach
-teammates when they update the plugin, and affect only projects created afterwards.
+teammates when they update, and affect only projects created afterwards.
+
+</details>
 
 ## Contact
 
