@@ -171,6 +171,28 @@ def is_hpc_user_dir(base: Path) -> bool:
     return len(p) == 4 and p[:2] == ["", "project"] and p[3] == os.environ.get("USER", "")
 
 
+def share_on_fir(root: Path, a) -> None:
+    """On an Alliance /project allocation, give the new project its zone's access.
+
+    New projects are B_Internal, so the allocation group gets read-only access and the PI
+    and data managers read/write. Without this the project stays private until someone
+    runs fir_share.sh. Raising the zone to C_Limited / D_Restric later needs a re-run.
+    """
+    if a.no_share or os.name != "posix" or not shutil.which("setfacl"):
+        return
+    if not re.search(r"/(def|rrg|rpp)-[a-z0-9-]+", str(root)):
+        return
+    script = Path(__file__).resolve().parent.parent / "fir-resources" / "fir_share.sh"
+    cmd = ["sh", str(script), str(root)]
+    if not script.exists():
+        print(f"\nAccess not set: {script} not found. Run fir_share.sh on {root} yourself.")
+        return
+    print("\nSetting access (B_Internal: group read-only; PI and data managers read/write):", flush=True)
+    r = subprocess.run(cmd)
+    if r.returncode != 0:
+        print(f"Access not set (exit {r.returncode}). The project is private until you run:\n  {' '.join(cmd)}")
+
+
 def cmd_new(a) -> None:
     check_name(a.name, "project")
     template = Path(a.template)
@@ -207,6 +229,7 @@ def cmd_new(a) -> None:
     for parent in DATED_PARENTS:
         make_dir(root / parent / a.date, created)
     report(root, created)
+    share_on_fir(root, a)
     print(f"\nTemplate copied from: {template}")
     print(f"Author filled as: {name} <{email}>"
           + ("  (set git config user.name/user.email, then fix README.md and docs/)"
@@ -313,6 +336,8 @@ def main() -> None:
     n.add_argument("--base", default=default_base())
     n.add_argument("--template", default=str(TEMPLATE))
     n.add_argument("--date", default=today())
+    n.add_argument("--no-share", action="store_true",
+                   help="don't run fir_share.sh (leave the new project private on Fir)")
     n.set_defaults(func=cmd_new)
 
     s = sub.add_parser("subproject")
