@@ -55,6 +55,30 @@ EXPERIMENTS_HEADER = (
 
 
 # ----------------------------------------------------------------------- helpers
+def copy_template(src: Path, dst: Path) -> None:
+    """Copy a template tree WITHOUT its permission bits (unlike shutil.copytree).
+
+    New files then take access from where they land (umask, and on Fir the default ACLs
+    set by fir_share.sh), so the PI keeps read/write. Copying the template's modes would
+    chmod each file, which on an ACL'd folder rewrites the mask and reopens group read.
+    Only the execute bit is carried over (e.g. .githooks/pre-push).
+    """
+    dst.mkdir()
+    names = os.listdir(src)
+    skip = SKIP(str(src), names)
+    for n in names:
+        if n in skip:
+            continue
+        s, d = src / n, dst / n
+        if s.is_dir():
+            copy_template(s, d)
+        else:
+            shutil.copyfile(s, d)
+            if os.name == "posix" and s.stat().st_mode & 0o100:
+                mode = d.stat().st_mode
+                os.chmod(d, mode | ((mode & 0o444) >> 2))  # +x wherever r is set
+
+
 def today() -> str:
     return dt.date.today().isoformat()
 
@@ -154,7 +178,7 @@ def cmd_new(a) -> None:
         sys.exit(f"ERROR: {root} already exists - not overwriting. "
                  f"Use 'date' mode to add dated folders to it.")
 
-    shutil.copytree(template, root, ignore=SKIP)
+    copy_template(template, root)
     created = [root]
 
     name, email = author()
@@ -183,7 +207,7 @@ def cmd_subproject(a) -> None:
     target = root / "subprojects" / a.name
     if target.exists():
         sys.exit(f"ERROR: {target} already exists - not overwriting.")
-    shutil.copytree(SUBPROJECT_TEMPLATE, target, ignore=SKIP)
+    copy_template(SUBPROJECT_TEMPLATE, target)
     name, _ = author()
     fill_placeholders(target, {"<SUBPROJECT>": a.name, "<AUTHOR>": name, "<DATE>": today()})
     experiments_add(root, a.name,

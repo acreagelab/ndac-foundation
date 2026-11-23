@@ -47,12 +47,16 @@ if [ "$check" = 1 ]; then
     echo "Access on $real:"
     getfacl -p "$real" 2>/dev/null | grep -v '^#'
     for u in $users; do
-        # Items with no entry for $u, or whose entry is cut to nothing by the mask.
+        # Items where $u has no entry, or the mask cuts it below read+write.
         missing=$(getfacl -R -p "$real" 2>/dev/null | awk -v u="user:$u:" '
             /^# file: / { if (f != "" && !ok) n++; f = substr($0, 9); ok = 0; next }
-            index($0, u) == 1 && $0 !~ /effective:---/ { ok = 1 }
+            index($0, u) == 1 {
+                perm = $0; sub(/^user:[^:]*:/, "", perm)
+                if (perm ~ /#effective:/) sub(/.*#effective:/, "", perm)
+                if (perm ~ /^rw/) ok = 1
+            }
             END { if (f != "" && !ok) n++; print n + 0 }')
-        echo "$u: $missing item(s) without access"
+        echo "$u: $missing item(s) without read+write"
     done
     # Read the real group/other entries (with ACLs, ls/find group bits show the mask).
     open=$(getfacl -R -p "$real" 2>/dev/null | awk '
