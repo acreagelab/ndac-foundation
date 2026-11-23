@@ -21,7 +21,14 @@ setx PROJECTS_ROOT C:\<NSID>\Projects
 Restart VS Code, open the Claude panel, type `/` and check that `init-data-project` and
 `export-check` are listed.
 
-**Linux / HPC:** `git clone ... ~/ndac-foundation && sh ~/ndac-foundation/install.sh`
+**Linux / HPC:**
+
+```bash
+cd ~
+git clone https://github.com/acreagelab/ndac-foundation
+bash ndac-foundation/install.sh
+```
+
 On Fir, then run `sh ~/.claude/skills/fir-resources/fir_share.sh`: you, your PI and the
 data manager (`skills/fir-resources/fir_share.conf`) get read/write, the rest of the group read-only on B_Internal projects and nothing on
 C_Limited / D_Restric ones (from each project's security zone).
