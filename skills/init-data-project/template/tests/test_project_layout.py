@@ -16,7 +16,7 @@ def test_layout():
               "docs/data_sources.md", "docs/experiments.md",
               "docs/research/objectives.md", "docs/research/plan.md",
               "docs/research/diagrams/pipeline.mmd", ".githooks/pre-push",
-              "init_project.sh", "scripts/setup_fir_env.sh", "scripts/job_template.sbatch",
+              "init_project.sh", "scripts/setup_fir_env.sh", "scripts/fir_python", "scripts/job_template.sbatch",
               "configs/fir.yaml", "scripts/fir_plan.py", "scripts/fir_stage.py"):
         assert (ROOT / f).is_file(), f"missing file: {f}"
 

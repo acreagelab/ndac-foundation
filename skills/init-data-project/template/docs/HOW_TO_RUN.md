@@ -34,15 +34,16 @@ python scripts/compare_runs.py TODO --sort <key_metric> --save
 Once per session, on a login node:
 
 ```bash
-module load StdEnv/2023 python/3.12 gdal
-source ~/envs/<PROJECT_NAME>/bin/activate
-cd ~/projects/<PROJECT_NAME>        # wherever the project is cloned on Fir
+cd <PROJECT_DIR>
 ```
+
+Python is the lab's shared image (`scripts/fir_python`, no `module load` or activate): use
+`scripts/fir_python` wherever this file says `python`.
 
 Run a version as a Slurm job (commit first). Plan it, then submit the command the plan prints:
 
 ```bash
-python scripts/fir_plan.py TODO v1_baseline     # time, memory, CPUs, staging, output location
+scripts/fir_python scripts/fir_plan.py TODO v1_baseline # time, memory, CPUs, staging, output location
 sbatch ... scripts/job_template.sbatch          # the exact command printed by fir_plan
 squeue -u $USER                                 # job status
 tail -f logs/<job-name>-<jobid>.out             # follow the log

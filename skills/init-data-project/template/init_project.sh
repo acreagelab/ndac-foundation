@@ -21,11 +21,13 @@ else
 fi
 
 # Notebook outputs (printed tables, plots of field data) must not reach git.
-if python -m nbstripout --version >/dev/null 2>&1; then
-    python -m nbstripout --install --attributes .gitattributes
+py=python
+[ -x scripts/fir_python ] && [ -d "${ZENVS:-/project/def-kanj241/zenvs}" ] && py=scripts/fir_python
+if $py -m nbstripout --version >/dev/null 2>&1; then
+    $py -m nbstripout --install --attributes .gitattributes
     echo "nbstripout installed: notebook outputs are stripped on commit."
 else
-    echo "WARNING: nbstripout not found - activate the project env (scripts/setup_fir_env.sh) and re-run."
+    echo "WARNING: nbstripout not found - on Fir run scripts/setup_fir_env.sh, elsewhere activate the project env, then re-run."
 fi
 
 echo ""

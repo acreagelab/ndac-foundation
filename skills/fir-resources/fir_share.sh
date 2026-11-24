@@ -86,8 +86,8 @@ zone_of() {  # zone from the project's CLAUDE.md; "-" if not a project, TODO if 
 group_perm() {  # what the allocation group gets for a zone
     case "$1" in A_Public|B_Internal) echo "r-X" ;; *) echo "---" ;; esac
 }
-is_folder_of_projects() {  # not a project itself, but holds projects (up to 3 levels down)
-    [ -d "$1" ] && [ ! -L "$1" ] && [ ! -f "$1/CLAUDE.md" ] || return 1
+is_folder_of_projects() {  # not a project or git repo itself, but holds projects (up to 3 levels down)
+    [ -d "$1" ] && [ ! -L "$1" ] && [ ! -f "$1/CLAUDE.md" ] && [ ! -e "$1/.git" ] || return 1
     [ -n "$(find "$1" -mindepth 2 -maxdepth 4 -name CLAUDE.md -print -quit 2>/dev/null)" ]
 }
 
