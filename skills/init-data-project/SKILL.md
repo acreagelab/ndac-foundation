@@ -40,13 +40,17 @@ get the change when they update the plugin. Existing projects are not touched.
 3. Show the "Created:" list.
 4. Offer to run `powershell -ExecutionPolicy Bypass -File "<project_dir>\init_project.ps1"`
    (git init, NDAC push guard, notebook output stripping, ignore checks). Only if the user
-   agrees. On Linux / Fir use `bash "<project_dir>/init_project.sh"` instead, and for the
-   Python environment `bash scripts/setup_fir_env.sh` (Alliance clusters don't support conda).
+   agrees. On Linux / Fir use `bash "<project_dir>/init_project.sh"` instead.
+   - Python on Fir is automatic: the script pins the newest lab image from
+     `/project/def-kanj241/zenvs` in `scripts/fir_python` and makes it VS Code's interpreter.
+     Run everything as `scripts/fir_python ...`; never create a conda env or a full venv.
+     Run `bash scripts/setup_fir_env.sh` once (before `init_project.sh`) to add what the image
+     lacks (pytest, nbstripout) as a small add-on venv.
    Heavy runs on Fir go through `scripts/job_template.sbatch`; see the project's CLAUDE.md,
    "Running on Fir". If the user is on Fir, remind them to confirm with the data steward that
    the project's security zone is allowed there before copying data.
 5. Remind the user of the first steps, in this order, and offer to help with each:
-   - CLAUDE.md TODOs: purpose, people (data steward), conda env, input security zone
+   - CLAUDE.md TODOs: purpose, people (data steward), environment, input security zone
      (A_Public / B_Internal / C_Limited / D_Restric), identifiers present. The zone starts
      as B_Internal (NDAC default for a new project); ask whether C_Limited / D_Restric data
      is expected and, if so, raise it now, before that data arrives.

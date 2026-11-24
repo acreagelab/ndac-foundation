@@ -1,0 +1,30 @@
+#!/bin/bash
+# This project's Python on Fir: the lab's shared image in /project/def-kanj241/zenvs, so
+# nobody builds a personal env for it (one file instead of ~100K on the group quota).
+#
+#   scripts/fir_python -u script.py         # use it exactly like python
+#
+# The image is pinned below, so every run of this project uses the same packages. To move
+# to a newer image: change IMAGE, run `scripts/fir_python -m pytest`, commit, and note it
+# in PROGRESS_REPORT.md. Packages the image lacks go in a small add-on venv made by
+# scripts/setup_fir_env.sh; when it exists it is used automatically. No `module load` needed.
+IMAGE=<FIR_IMAGE>
+ZENVS="${ZENVS:-/project/def-kanj241/zenvs}"
+
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+extra="${FIR_ENV_DIR:-$HOME/venvs/$(basename "$root")}"
+sif="$ZENVS/containers/$IMAGE.sif"
+
+if [ ! -f "$sif" ]; then
+    echo "fir_python: image not found: $sif (see $ZENVS/README.md for current images)" >&2
+    exit 1
+fi
+unset SSL_CERT_FILE CURL_CA_BUNDLE   # host paths, missing in the image (breaks HTTPS)
+if [ ! -f "$extra/pyvenv.cfg" ]; then   # bin/python links into the image: test pyvenv.cfg
+    exec "$ZENVS/bin/$IMAGE-python" "$@"
+fi
+
+apptainer="$(command -v apptainer || echo /cvmfs/soft.computecanada.ca/easybuild/software/2023/x86-64-v3/Core/apptainer/1.2.4/bin/apptainer)"
+nv=; { [ -n "${CUDA_VISIBLE_DEVICES:-}" ] || [ -e /dev/nvidia0 ]; } && nv=--nv
+unset PYTHONHOME LD_LIBRARY_PATH
+exec "$apptainer" exec $nv "$sif" "$extra/bin/python" "$@"

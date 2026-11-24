@@ -57,11 +57,14 @@ TODO: only commands verified to work, in order. Keep [docs/HOW_TO_RUN.md](docs/H
   verify join keys after any shapefile write. Write CRS and nodata on every raster output.
 
 ## Running on Fir (Alliance HPC; delete this section if unused)
-- Environment: no conda on Alliance. `bash scripts/setup_fir_env.sh` once on a login node
-  (modules + virtualenv in `~/envs/<project>`); it records versions in `requirements-fir.lock.txt`
+- Environment: the lab's shared image in `/project/def-kanj241/zenvs`, pinned in
+  `scripts/fir_python`. On Fir ALWAYS run Python as `scripts/fir_python -u ...` (also
+  `scripts/fir_python -m pytest`), never bare `python`, a conda env or a new venv. Packages the
+  image lacks: add to requirements.txt, then `bash scripts/setup_fir_env.sh` (small add-on venv
+  in `~/venvs/<project>`, used automatically); it records versions in `requirements-fir.lock.txt`
 - Setup: `bash init_project.sh` (bash version of init_project.ps1)
 - Claude and light work (editing, small tests, downloads) on the LOGIN node; anything heavy
-  goes through Slurm. Before every job run `python scripts/fir_plan.py <subproject> <version>`:
+  goes through Slurm. Before every job run `scripts/fir_python scripts/fir_plan.py <subproject> <version>`:
   it sizes time/memory/CPUs from earlier runs (sacct), decides staging to node-local disk and
   where outputs go, and prints the `sbatch` command. Show the plan; submit only when the user agrees
 - Settings: `configs/fir.yaml` (account, /project and /scratch paths, thresholds); per-version

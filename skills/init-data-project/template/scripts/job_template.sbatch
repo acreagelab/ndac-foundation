@@ -14,8 +14,9 @@
 #                  fails, or is about to hit its time limit
 #   OUTPUT_ROOT    where run folders end up (default: <project>/data/outputs; use /scratch for big outputs)
 #
-# Before the first job: set fir.account in configs/fir.yaml, run scripts/setup_fir_env.sh on a
-# login node, and commit (the run folder records the git commit; "-dirty" = uncommitted).
+# Python is the lab's shared image, pinned in scripts/fir_python (no module load, no venv to
+# activate). Before the first job: set fir.account in configs/fir.yaml, run
+# scripts/setup_fir_env.sh on a login node if requirements.txt has packages the image lacks, and commit (the run folder records the git commit; "-dirty" = uncommitted).
 # Compute nodes have no internet: download data (e.g. Earth Engine) on a login node first.
 #
 #SBATCH --account=def-TODO          # overridden by fir_plan's --account
@@ -32,10 +33,7 @@ set -eo pipefail   # no -u: Lmod's module command can trip over unset variables
 
 cd "${SLURM_SUBMIT_DIR}"
 project_dir="$PWD"
-project="$(basename "$PWD")"
-module load StdEnv/2023 python/3.12 gdal          # keep in step with scripts/setup_fir_env.sh
-# shellcheck disable=SC1090
-source "${FIR_ENV_DIR:-$HOME/envs/$project}/bin/activate"
+PY="$project_dir/scripts/fir_python"
 
 export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-1}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-$project_dir/data/outputs}"
@@ -56,7 +54,7 @@ trap 'echo "Time limit close: saving results"; copy_back; kill -TERM "$pid" 2>/d
 if [ "${STAGE:-0}" = 1 ]; then
     : "${SLURM_TMPDIR:?STAGE=1 needs node-local disk (SLURM_TMPDIR)}"
     echo "Staging inputs to ${SLURM_TMPDIR}"
-    python -u scripts/fir_stage.py "$SUB" "$VER" "$SLURM_TMPDIR/data_root"
+    "$PY" -u scripts/fir_stage.py "$SUB" "$VER" "$SLURM_TMPDIR/data_root"
     export DATA_ROOT="$SLURM_TMPDIR/data_root"
     export RUNS_ROOT="$SLURM_TMPDIR/runs"
 else
@@ -64,6 +62,6 @@ else
 fi
 
 # Run in the background and wait, so the USR1 warning can be handled while Python runs.
-python -u "subprojects/${SUB}/scripts/01_run.py" --version "${VER}" &
+"$PY" -u "subprojects/${SUB}/scripts/01_run.py" --version "${VER}" &
 pid=$!
 wait "$pid"

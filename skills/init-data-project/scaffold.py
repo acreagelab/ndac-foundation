@@ -48,6 +48,9 @@ graph/**
 !graph/**/.gitkeep
 """
 
+ZENVS = Path(os.environ.get("ZENVS", "/project/def-kanj241/zenvs"))
+FALLBACK_IMAGE = "geo_2026.11"
+
 EXPERIMENTS_HEADER = (
     "| Version | Parent | Hypothesis | What changed | Key metric result | Decision | Date |\n"
     "|---|---|---|---|---|---|---|\n"
@@ -171,6 +174,34 @@ def is_hpc_user_dir(base: Path) -> bool:
     return len(p) == 4 and p[:2] == ["", "project"] and p[3] == os.environ.get("USER", "")
 
 
+def newest_image() -> str:
+    """Newest lab image that has a python wrapper and is not marked deprecated in the
+    zenvs README registry. Pinned into the project, so later images don't change it."""
+    if not (ZENVS / "containers").is_dir():
+        return FALLBACK_IMAGE
+    readme = ZENVS / "README.md"
+    registry = readme.read_text(encoding="utf-8", errors="replace") if readme.exists() else ""
+    deprecated = set(re.findall(r"^\|\s*`([^`]+)`.*\b(?:deprecated|removed)\b", registry, re.M | re.I))
+    images = sorted(s.stem for s in (ZENVS / "containers").glob("*.sif")
+                    if (ZENVS / "bin" / f"{s.stem}-python").exists() and s.stem not in deprecated)
+    return images[-1] if images else FALLBACK_IMAGE
+
+
+def set_fir_python(root: Path) -> str:
+    """Pin the lab image in scripts/fir_python; on Fir also make it VS Code's interpreter."""
+    image = newest_image()
+    wrapper = root / "scripts" / "fir_python"
+    if wrapper.exists():
+        wrapper.write_text(wrapper.read_text(encoding="utf-8").replace("<FIR_IMAGE>", image),
+                           encoding="utf-8")
+    vscode = root / ".vscode" / "settings.json"
+    if ZENVS.is_dir() and not vscode.exists():
+        vscode.parent.mkdir(exist_ok=True)
+        vscode.write_text('{\n  "python.defaultInterpreterPath": "${workspaceFolder}/scripts/fir_python"\n}\n',
+                          encoding="utf-8")
+    return image
+
+
 def share_on_fir(root: Path, a) -> None:
     """On an Alliance /project allocation, give the new project its zone's access.
 
@@ -228,7 +259,11 @@ def cmd_new(a) -> None:
         make_dir(root / d, created)
     for parent in DATED_PARENTS:
         make_dir(root / parent / a.date, created)
+    image = set_fir_python(root)
     report(root, created)
+    if ZENVS.is_dir():
+        print(f"\nPython on Fir: lab image {image} via scripts/fir_python "
+              f"(also VS Code's interpreter). Packages it lacks: bash scripts/setup_fir_env.sh")
     share_on_fir(root, a)
     print(f"\nTemplate copied from: {template}")
     print(f"Author filled as: {name} <{email}>"
