@@ -44,7 +44,8 @@ if [ ${#missing[@]} -eq 0 ]; then
     echo "Everything in requirements.txt is in the image; no add-on venv needed."
 else
     unset PYTHONHOME LD_LIBRARY_PATH SSL_CERT_FILE CURL_CA_BUNDLE
-    in_sif() { "$apptainer" exec "$sif" "$@"; }
+    binds=; for d in /project /scratch /localscratch; do [ -d "$d" ] && binds="$binds${binds:+,}$d"; done
+    in_sif() { "$apptainer" exec ${binds:+-B "$binds"} "$sif" "$@"; }
     [ -f "$extra/pyvenv.cfg" ] || in_sif python -m venv --system-site-packages "$extra"
     for req in "${missing[@]}"; do
         if in_sif "$extra/bin/pip" install -q --no-index "$req" 2>/dev/null; then
